@@ -10,7 +10,7 @@ const TelegramLoginWidget = () => {
 		const signInUser = async (user: any) => {
 			try {
 				const response = await signIn(user);
-				if (response) {
+				if (response && response.status === 200) {
 					setJwtTokens(response);
 				}
 			} catch (error) {

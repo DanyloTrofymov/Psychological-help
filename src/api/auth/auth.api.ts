@@ -12,21 +12,20 @@ export const signIn = async (data: AuthRequest) => {
 	} catch (e) {
 		console.error(e);
 		if (isAxiosError(e)) {
-			return e;
+			return e.response;
 		}
 	}
 };
 
 export const getTokens = async (refreshToken: string) => {
 	try {
-		const response = await axios.get(`${AUTH_REQUEST}/refresh-token`, {
+		return await axios.get(`${AUTH_REQUEST}/refresh-token`, {
 			headers: { Authorization: `Bearer ${refreshToken}` }
 		});
-		return response.data;
 	} catch (e) {
 		console.error(e);
 		if (isAxiosError(e)) {
-			return e;
+			return e.response;
 		}
 	}
 };
@@ -36,7 +35,7 @@ export const getUser = async () => {
 	} catch (e) {
 		console.error(e);
 		if (isAxiosError(e)) {
-			return e;
+			return e.response;
 		}
 	}
 };

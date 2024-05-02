@@ -26,13 +26,14 @@ instance.interceptors.response.use(
 				if (!refreshToken) {
 					throw error;
 				}
-				const tokens = await getTokens(refreshToken);
+				const response = await getTokens(refreshToken);
 				// Store the new access token
-				localStorage.setItem(ACCESS_TOKEN, tokens.accessToken);
-				localStorage.setItem(REFRESH_TOKEN, tokens.refreshToken);
-
-				originalRequest.headers.Authorization = `Bearer ${tokens.accessToken}`;
-				return instance(originalRequest);
+				if (response && response.status === 200) {
+					localStorage.setItem(ACCESS_TOKEN, response.data.accessToken);
+					localStorage.setItem(REFRESH_TOKEN, response.data.refreshToken);
+					originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
+					return instance(originalRequest);
+				}
 			} catch (refreshError) {
 				console.error(refreshError);
 				if (isAxiosError(refreshError)) {
