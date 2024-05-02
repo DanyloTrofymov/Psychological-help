@@ -13,12 +13,14 @@ jobs:
     runs-on: self-hosted
 
     steps:
+    - name: Stop container
+      run: docker stop psychological-help-container-fe || true
     - name: Delete old image
-      run: docker image rm danylotrofymov/psychological-help-fe
-    - name: Pull docker image
-      run: docker pull danylotrofymov/psychological-help-fe:latest
+      run: docker image rm danylotrofymov/psychological-help-fe || true
     - name: Delete old container
       run: docker rm -f psychological-help-container || true
+    - name: Pull docker image
+      run: docker pull danylotrofymov/psychological-help-fe:latest
     - name: Run new container
       run: docker run -d -p 3000:3000 --network psycho-help --name psychological-help-container danylotrofymov/psychological-help-fe
     
