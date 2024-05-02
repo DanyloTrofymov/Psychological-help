@@ -13,10 +13,10 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - name: Pull docker image
-      run: docker pull danylotrofymov/psychological-help-fe:latest
     - name: Delete old image
       run: docker image rm danylotrofymov/psychological-help-fe
+    - name: Pull docker image
+      run: docker pull danylotrofymov/psychological-help-fe:latest
     - name: Delete old container
       run: docker rm -f psychological-help-container || true
     - name: Run new container
