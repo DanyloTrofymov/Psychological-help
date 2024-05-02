@@ -17,6 +17,6 @@ jobs:
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - name: Build docker image
-      run: docker build --tag psychological-help-fe .
+      run: docker build --tag danylotrofymov/psychological-help-fe .
     - name: Push to Dockerhub
       run: docker push danylotrofymov/psychological-help-fe:latest
