@@ -7,8 +7,7 @@ import axiosInstance from '../axiosInstance/axios.instance';
 
 export const signIn = async (data: AuthRequest) => {
 	try {
-		const response = await axios.post(`${AUTH_REQUEST}/signIn`, data);
-		return response.data;
+		return await axios.post(`${AUTH_REQUEST}/signIn`, data);
 	} catch (e) {
 		console.error(e);
 		if (isAxiosError(e)) {

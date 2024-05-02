@@ -11,7 +11,7 @@ const TelegramLoginWidget = () => {
 			try {
 				const response = await signIn(user);
 				if (response && response.status === 201) {
-					setJwtTokens(response);
+					setJwtTokens(response.data);
 				}
 			} catch (error) {
 				console.error(error);
