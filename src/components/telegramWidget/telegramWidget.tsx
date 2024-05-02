@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import { signIn } from '@/api/auth/auth.api';
 import useUser from '@/context/useUser';
+import { BOT_NAME } from '@/data/apiConstants';
 
 const TelegramLoginWidget = () => {
 	const { setJwtTokens, user } = useUser();
@@ -33,7 +34,7 @@ const TelegramLoginWidget = () => {
 		const script = document.createElement('script');
 		script.src = 'https://telegram.org/js/telegram-widget.js?22';
 		script.async = true;
-		script.dataset.telegramLogin = 'psycological_help_bot';
+		script.dataset.telegramLogin = BOT_NAME;
 		script.dataset.size = 'large';
 		script.dataset.onauth = 'onTelegramAuth(user)';
 		script.dataset.requestAccess = 'write';

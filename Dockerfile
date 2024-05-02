@@ -7,6 +7,7 @@ COPY . /usr/src/app
 
 ENV NEXT_PUBLIC_HOST=https://be.getpsychohelp.com
 ENV NEXT_PUBLIC_URL=https://getpsychohelp.com
+ENV NEXT_PUBLIC_BOT=psycological_help_bot
 
 EXPOSE 3000
 
