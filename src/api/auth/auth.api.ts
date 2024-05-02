@@ -1,30 +1,42 @@
-import { AuthResponse } from "@/dto/auth/auth.response";
-import axiosInstance from "../axiosInstance/axios.instance";
-import axios from 'axios';
-import { AuthRequest } from "@/dto/auth/auth.request";
-import { AUTH_REQUEST } from "@/data/apiConstants";
+import axios, { isAxiosError } from 'axios';
 
-export const signIn = async (data: AuthRequest): Promise<AuthResponse> => {
-  try {
-    const response = await axios.post(`${AUTH_REQUEST}/signIn`, data);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+import { AUTH_REQUEST } from '@/data/apiConstants';
+import { AuthRequest } from '@/dto/auth/auth.request';
+
+import axiosInstance from '../axiosInstance/axios.instance';
+
+export const signIn = async (data: AuthRequest) => {
+	try {
+		const response = await axios.post(`${AUTH_REQUEST}/signIn`, data);
+		return response.data;
+	} catch (e) {
+		console.error(e);
+		if (isAxiosError(e)) {
+			return e;
+		}
+	}
 };
 
-export const getTokens = async (refreshToken: string): Promise<AuthResponse> => {
-  try {
-    const response = await axios.get(`${AUTH_REQUEST}/refresh-token`, { headers: { Authorization: `Bearer ${refreshToken}` } });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
+export const getTokens = async (refreshToken: string) => {
+	try {
+		const response = await axios.get(`${AUTH_REQUEST}/refresh-token`, {
+			headers: { Authorization: `Bearer ${refreshToken}` }
+		});
+		return response.data;
+	} catch (e) {
+		console.error(e);
+		if (isAxiosError(e)) {
+			return e;
+		}
+	}
+};
 export const getUser = async () => {
-  try {
-    return await axiosInstance.get(`${AUTH_REQUEST}/current-user`);
-  } catch (error) {
-    throw error;
-  }
-}
+	try {
+		return await axiosInstance.get(`${AUTH_REQUEST}/current-user`);
+	} catch (e) {
+		console.error(e);
+		if (isAxiosError(e)) {
+			return e;
+		}
+	}
+};
