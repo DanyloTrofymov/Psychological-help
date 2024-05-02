@@ -1,5 +1,4 @@
 const nextConfig = {
-  output: 'export',
   reactStrictMode: false,
   swcMinify: true,
   images: {
@@ -15,7 +14,7 @@ const nextConfig = {
       },
     },
   },
-  
+
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
