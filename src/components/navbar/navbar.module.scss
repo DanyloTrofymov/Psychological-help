@@ -1,0 +1,23 @@
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 100px;
+	background-color: var(--primary);
+	color: #fff;
+}
+
+.accountContainer {
+	display: flex;
+	align-items: center;
+	background-color: var(--secondary);
+	padding: 5px 10px 5px 5px;
+	border-radius: 50px;
+}
+
+.logo {
+	/* Inherit border-radius from the image */
+	box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+	width: 70px;
+	height: 70px;
+}

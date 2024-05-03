@@ -10,6 +10,7 @@ import {
 	useState
 } from 'react';
 
+import { Navbar } from '@/components/navbar/Navbar';
 import { AuthResponse } from '@/dto/auth/auth.response';
 
 import { getUser } from '../api/auth/auth.api';
@@ -105,6 +106,7 @@ export const UserContextProvider: FC<Properties> = ({ children }) => {
 		</Stack>
 	) : (
 		<UserContext.Provider value={providerValue}>
+			<Navbar />
 			{children}
 		</UserContext.Provider>
 	);
