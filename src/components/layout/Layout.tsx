@@ -1,4 +1,3 @@
-import { CircularProgress, Stack } from '@mui/material';
 import cn from 'classnames';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -7,6 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import useUser from '@/context/useUser';
 import { privatePages, publicPages } from '@/data/pages';
 
+import CenteredLoader from '../custom/CenteredLoader';
 import ErrorBoundary from '../errorBoundary/ErrorBoundary';
 import { ILayout } from './layout.interfaces';
 import styles from './layout.module.scss';
@@ -75,26 +75,7 @@ export function Layout({
 			<ErrorBoundary>
 				<div>
 					<main className={cn(styles.main, !outerPage && styles.mainInner)}>
-						{isLoading || isLoadingToCheckUser ? (
-							<Stack
-								direction="row"
-								sx={{
-									height: 'calc(100% - 64px)',
-									justifyContent: 'center'
-								}}
-							>
-								<Stack
-									sx={{
-										justifyContent: 'center',
-										alignItems: 'center'
-									}}
-								>
-									<CircularProgress />
-								</Stack>
-							</Stack>
-						) : (
-							children
-						)}
+						{isLoading || isLoadingToCheckUser ? <CenteredLoader /> : children}
 					</main>
 				</div>
 			</ErrorBoundary>

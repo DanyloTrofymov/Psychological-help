@@ -16,6 +16,11 @@ export const privatePages: PrivatePages = {
 		route: '/tests/manage',
 		title: 'Tests',
 		roles: [ROLE.ADMIN]
+	},
+	startTest: {
+		route: '/tests[id]',
+		title: 'Tests',
+		roles: [ROLE.USER, ROLE.ADMIN]
 	}
 };
 

@@ -28,6 +28,7 @@ export interface QuizQuestionResponse {
 }
 
 export interface QuizAnswerResponse {
+	id: number;
 	title: string;
 	score: number;
 	mediaId?: number;

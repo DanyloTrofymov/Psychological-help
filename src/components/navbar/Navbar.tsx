@@ -8,12 +8,14 @@ import { useEffect, useRef, useState } from 'react';
 import useUser from '@/context/useUser';
 
 import TelegramLoginWidget from '../telegramWidget/TelegramWidget';
+import AccountMenu from './AccountMenu';
 import styles from './navbar.module.scss';
 
 export function Navbar(): JSX.Element {
 	const { user } = useUser();
 	const router = useRouter();
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
+	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 	const [isPictureAvailable, setIsPictureAvailable] = useState(false);
 	const ref = useRef<HTMLElement>(null);
 	useEffect(() => {
@@ -30,12 +32,18 @@ export function Navbar(): JSX.Element {
 		if (user) {
 			setIsLoggingIn(true);
 			fetchPicture();
+		} else {
+			setIsLoggingIn(false);
 		}
 	}, [user]);
 
 	return (
 		<Box className={styles.navbar}>
-			<Box sx={{ width: ref?.current?.clientWidth, ml: 1 }}>
+			<AccountMenu anchorEl={anchorEl} onClose={() => setAnchorEl(null)} />
+			<Box
+				sx={{ width: ref?.current?.clientWidth, ml: 1, cursor: 'poiter' }}
+				onClick={() => router.push('/')}
+			>
 				<Image src={'/logo-white.svg'} alt="logo" width={70} height={70} />
 			</Box>
 			<Typography variant="h1" sx={{ justifySelf: 'center' }}>
@@ -46,17 +54,19 @@ export function Navbar(): JSX.Element {
 				{!isLoggingIn ? (
 					<TelegramLoginWidget />
 				) : (
-					<Stack direction="row" className={styles.accountContainer}>
+					<Stack
+						direction="row"
+						className={styles.accountContainer}
+						onClick={e => setAnchorEl(e.currentTarget)}
+					>
 						<Avatar
 							src={isPictureAvailable ? user?.avatar?.url : undefined}
-							onClick={() => router.push('/')}
 							sx={{
 								backgroundColor: 'var(--light-gray)',
 								color: 'white',
 								mr: 1,
 								height: 30,
-								width: 30,
-								cursor: 'pointer'
+								width: 30
 							}}
 						>
 							<PersonIcon />

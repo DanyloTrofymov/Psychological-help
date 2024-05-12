@@ -1,4 +1,5 @@
 import { CircularProgress, Stack } from '@mui/material';
+import { useRouter } from 'next/router';
 import {
 	createContext,
 	FC,
@@ -35,7 +36,7 @@ const useUser = () => useContext(UserContext) as Context;
 export const UserContextProvider: FC<Properties> = ({ children }) => {
 	const [userData, setUserData] = useState<CurrentUserResponse | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
-
+	const router = useRouter();
 	const setJwtTokens = (jwtData: AuthResponse) => {
 		if (jwtData) {
 			getUserData();
@@ -49,6 +50,8 @@ export const UserContextProvider: FC<Properties> = ({ children }) => {
 
 	const logout = () => {
 		localStorage.removeItem(ACCESS_TOKEN);
+		localStorage.removeItem(REFRESH_TOKEN);
+		router.push('/');
 		setUserData(null);
 	};
 

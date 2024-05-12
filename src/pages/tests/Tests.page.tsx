@@ -8,7 +8,7 @@ import useUser from '@/context/useUser';
 import { QuizResponse } from '@/data/dto/quiz/quiz';
 import { ROLE } from '@/data/dto/user/userInfo';
 
-import QuizCard from '../../components/quiz/QuizCard';
+import QuizCard from '../../components/quizCard/QuizCard';
 
 const QuizLayout = () => {
 	const [quizzes, setQuizzes] = useState<QuizResponse[]>([]);

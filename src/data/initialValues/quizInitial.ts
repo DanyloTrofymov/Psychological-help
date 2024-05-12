@@ -1,4 +1,5 @@
 import { QuizEntity } from '../entities/quiz.entity';
+import { TakeEntity } from '../entities/take.entity';
 
 export const quizInitial: QuizEntity = {
 	title: '',
@@ -15,4 +16,9 @@ export const quizInitial: QuizEntity = {
 			]
 		}
 	]
+};
+
+export const takeInitial: TakeEntity = {
+	quizId: 0,
+	answers: []
 };

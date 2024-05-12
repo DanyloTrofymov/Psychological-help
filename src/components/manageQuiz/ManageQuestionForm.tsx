@@ -128,10 +128,13 @@ const QuestionForm = ({
 						}
 					/>
 					<AnswerForm
+						handleBlur={handleBlur}
 						question={question}
-						questioinIndex={index}
+						questionIndex={index}
 						handleChange={handleChange}
 						setFieldValue={setFieldValue}
+						touched={touched}
+						errors={errors}
 					/>
 					<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14, pl: 3 }}>
 						{values.questions[index].answers.length < 2 &&

@@ -1,6 +1,6 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box, IconButton, Stack, TextField } from '@mui/material';
-import { FormikErrors } from 'formik';
+import { FormikErrors, FormikTouched } from 'formik';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -13,7 +13,10 @@ const AnswerForm = ({
 	question,
 	handleChange,
 	setFieldValue,
-	questioinIndex
+	questionIndex,
+	errors,
+	touched,
+	handleBlur
 }: {
 	question: QuizQuestionEntity;
 	setFieldValue: (
@@ -22,7 +25,13 @@ const AnswerForm = ({
 		shouldValidate?: boolean | undefined
 	) => Promise<void> | Promise<FormikErrors<QuizEntity>>;
 	handleChange: (e: React.ChangeEvent<any>) => void;
-	questioinIndex: number;
+	handleBlur: {
+		(e: FocusEvent): void;
+		<T = any>(fieldOrEvent: T): T extends string ? (e: any) => void : void;
+	};
+	questionIndex: number;
+	errors: FormikErrors<QuizEntity>;
+	touched: FormikTouched<QuizEntity>;
 }) => {
 	const [animationClasses, setAnimationClasses] = useState<string[]>([]);
 
@@ -33,7 +42,7 @@ const AnswerForm = ({
 	const handleAddAnswer = () => {
 		const newAnswer = { title: '', score: 0, mediaId: undefined };
 		const updatedAnswers = [...question.answers, newAnswer];
-		setFieldValue(`questions[${questioinIndex}].answers`, updatedAnswers);
+		setFieldValue(`questions[${questionIndex}].answers`, updatedAnswers);
 		setAnimationClasses(animationClasses.concat(['entering']));
 		setTimeout(() => {
 			setAnimationClasses(current =>
@@ -50,7 +59,7 @@ const AnswerForm = ({
 		);
 		setTimeout(() => {
 			setFieldValue(
-				`questions[${questioinIndex}].answers`,
+				`questions[${questionIndex}].answers`,
 				question.answers.filter((_, i) => i !== index)
 			);
 			setAnimationClasses(current => current.filter((_, i) => i !== index));
@@ -70,29 +79,62 @@ const AnswerForm = ({
 						mt: 1
 					}}
 				>
-					<Stack direction="row" alignItems="center" spacing={2} sx={{ pb: 2 }}>
+					<Stack
+						direction="row"
+						alignItems="flex-start"
+						spacing={2}
+						sx={{ pb: 2 }}
+					>
 						<TextField
-							name={`questions[${questioinIndex}].answers[${idx}].title`}
+							name={`questions[${questionIndex}].answers[${idx}].title`}
 							label="Answer Title"
 							onChange={handleChange}
 							value={question.answers[idx].title}
 							sx={{ width: '100%' }}
+							onBlur={handleBlur(
+								`questions[${questionIndex}].answers[${idx}].title`
+							)}
+							error={
+								touched?.questions &&
+								touched?.questions[questionIndex] &&
+								touched?.questions[questionIndex]?.answers &&
+								touched?.questions[questionIndex]?.answers?.length &&
+								(touched?.questions[questionIndex] as any)?.answers[idx]
+									?.title &&
+								Boolean(
+									errors?.questions &&
+										errors?.questions[questionIndex] &&
+										(errors?.questions[questionIndex] as any)?.answers &&
+										(errors?.questions[questionIndex] as any).answers?.length &&
+										(errors?.questions[questionIndex] as any)?.answers[idx]
+											?.title
+								)
+							}
+							helperText={
+								errors?.questions &&
+								errors?.questions[questionIndex] &&
+								(errors?.questions[questionIndex] as any)?.answers &&
+								(errors?.questions[questionIndex] as any).answers?.length &&
+								(errors?.questions[questionIndex] as any)?.answers[idx]?.title
+							}
 						/>
 						<TextField
 							type="number"
-							name={`questions[${questioinIndex}].answers[${idx}].score`}
+							name={`questions[${questionIndex}].answers[${idx}].score`}
 							label="Score"
 							onChange={handleChange}
 							value={question.answers[idx].score}
 							sx={{ width: '68px' }}
 						/>
 						{!router.query.id && (
-							<IconButton
-								onClick={() => handleRemoveAnswer(idx)}
-								sx={{ height: '35px', width: '35px' }}
-							>
-								<DeleteOutlineIcon />
-							</IconButton>
+							<Box sx={{ pt: 1 }}>
+								<IconButton
+									onClick={() => handleRemoveAnswer(idx)}
+									sx={{ height: '35px', width: '35px' }}
+								>
+									<DeleteOutlineIcon />
+								</IconButton>
+							</Box>
 						)}
 					</Stack>
 				</Stack>

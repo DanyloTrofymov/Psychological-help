@@ -17,6 +17,7 @@ import { QuizResponse } from '@/data/dto/quiz/quiz';
 import { ROLE } from '@/data/dto/user/userInfo';
 
 import AlertDialog from '../alertDialog/AlertDialog';
+import LoginModal from '../loginModal/loginModal';
 import styles from './quizCard.module.scss';
 
 interface QuizCardProps {
@@ -25,8 +26,9 @@ interface QuizCardProps {
 
 const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 	const defaultImage = '/images/quiz.jpg';
-	const [visible, setVisible] = useState(true);
+	const [visible, setVisible] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 	const { user } = useUser();
 	const router = useRouter();
 
@@ -36,13 +38,23 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 			router.reload();
 		}
 	};
+
+	const handleQuizClick = () => {
+		if (user) {
+			router.push(`/tests/${quiz.id}`);
+		} else {
+			setShowModal(true);
+		}
+	};
 	return (
 		<>
+			<LoginModal open={showModal} onClose={() => setShowModal(false)} />
 			<Card
 				className={styles.quizCard}
 				onMouseEnter={() => setVisible(true)}
 				onMouseLeave={() => setVisible(false)}
 				sx={{ height: '100%' }}
+				onClick={handleQuizClick}
 			>
 				<CardMedia
 					component={'img'}
@@ -57,7 +69,6 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 							<Typography variant="h5" gutterBottom>
 								{quiz.title}
 							</Typography>
-							{quiz.summary && <Typography>{quiz.summary}</Typography>}
 							{quiz.subtitle && (
 								<Typography variant="subtitle1">{quiz.subtitle}</Typography>
 							)}
