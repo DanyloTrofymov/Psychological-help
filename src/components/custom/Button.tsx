@@ -17,30 +17,30 @@ const Button = styled(LegacyButton)<ButtonProps>(
 		lineHeight: '20px',
 		letterSpacing: '0em',
 		backgroundColor: 'transparent',
-		color: 'var(--green)',
+		color: 'var(--secondary-blue)',
 		boxSizing: 'border-box',
 		boxShadow: 'none',
 		border: 'none',
 		padding: '15px 30px 15px 30px',
 		textDecoration: link ? 'underline' : 'none',
 		'&:hover': {
-			color: 'var(--green)',
+			color: 'var(--button-hover)',
 			backgroundColor: 'transparent',
 			boxShadow: 'none'
 		},
 		'&:focus-visible': {
-			backgroundColor: 'var(--green)',
+			backgroundColor: 'var(--transparent-secondary-blue)',
 			Opacity: '0.2',
-			color: 'var(--green)',
+			color: 'var(--button-hover)',
 			boxShadow: 'none'
 		},
 		'&:active:focus': {
-			color: 'var(--green)',
+			color: 'var(--button-active)',
 			backgroundColor: 'transparent',
 			boxShadow: 'none'
 		},
 		'&:disabled': {
-			color: 'var(--green)',
+			color: 'var(--button-disabled)',
 			backgroundColor: 'transparent',
 			boxShadow: 'none'
 		},
@@ -49,25 +49,25 @@ const Button = styled(LegacyButton)<ButtonProps>(
 			fontSize: '14px',
 			lineHeight: '20px',
 			gap: '10px',
-			backgroundColor: 'var(--green)',
+			backgroundColor: 'var(--secondary-blue)',
 			textDecoration: 'none',
 			'&:hover': {
-				backgroundColor: 'var(--green-hover)',
+				backgroundColor: 'var(--button-hover)',
 				color: 'var(--nero)'
 			},
 			'&:active:focus': {
-				backgroundColor: 'var(--green)',
-				webkitBoxShadow: 'inset 0px 0px 0px 2px var(--green)',
-				mozBoxShadow: 'inset 0px 0px 0px 2px var(--green)',
-				boxShadow: 'inset 0px 0px 0px 2px var(--green)',
+				backgroundColor: 'var(--button-hover)',
+				webkitBoxShadow: 'inset 0px 0px 0px 2px var(--secondary-blue)',
+				mozBoxShadow: 'inset 0px 0px 0px 2px var(--secondary-blue)',
+				boxShadow: 'inset 0px 0px 0px 2px var(--secondary-blue)',
 				color: 'var(--nero)'
 			},
 			'&:active': {
-				backgroundColor: 'var(--green-hover)',
+				backgroundColor: 'var(--button-active)',
 				color: 'var(--nero)'
 			},
 			'&:disabled': {
-				backgroundColor: 'var(--light-gray)',
+				backgroundColor: 'var(--button-disabled)',
 				color: 'var(--nero)'
 			},
 			...(big && {

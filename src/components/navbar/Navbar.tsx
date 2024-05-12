@@ -18,7 +18,7 @@ export function Navbar(): JSX.Element {
 		const fetchPicture = async () => {
 			if (user) {
 				try {
-					await axios.get(user.Avatar.url);
+					await axios.get(user.avatar.url);
 					setIsPictureAvailable(true);
 				} catch (error) {
 					console.error(error);
@@ -34,9 +34,7 @@ export function Navbar(): JSX.Element {
 	return (
 		<Box className={styles.navbar}>
 			<Box sx={{ width: ref?.current?.clientWidth, ml: 1 }}>
-				<Avatar className={styles.logo}>
-					<Image src={'/logo.svg'} alt="logo" width={70} height={70} />
-				</Avatar>
+				<Image src={'/logo-white.svg'} alt="logo" width={70} height={70} />
 			</Box>
 			<Typography variant="h1" sx={{ justifySelf: 'center' }}>
 				Час подбати про себе. Почніть піклуватися про своє здоров&apos;я вже
@@ -48,7 +46,7 @@ export function Navbar(): JSX.Element {
 				) : (
 					<Stack direction="row" className={styles.accountContainer}>
 						<Avatar
-							src={isPictureAvailable ? user?.Avatar?.url : undefined}
+							src={isPictureAvailable ? user?.avatar?.url : undefined}
 							sx={{
 								backgroundColor: 'var(--light-gray)',
 								color: 'white',

@@ -1,7 +1,7 @@
 import axios, { isAxiosError } from 'axios';
 
 import { AUTH_REQUEST } from '@/data/apiConstants';
-import { AuthRequest } from '@/dto/auth/auth.request';
+import { AuthRequest } from '@/data/dto/auth/auth.request';
 
 import axiosInstance from '../axiosInstance/axios.instance';
 

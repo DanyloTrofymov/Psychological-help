@@ -1,0 +1,44 @@
+.quizForm {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease-out;
+
+	.question {
+		border: 1px solid #eee;
+		padding: 15px;
+		margin-top: 20px;
+		background-color: #fafafa;
+
+		.answers {
+			margin-left: 20px;
+
+			.answer {
+				background-color: #f0f0f0;
+				margin-top: 10px;
+				padding: 10px;
+				border: 1px solid #ddd;
+			}
+		}
+	}
+}
+
+.animatedItem {
+	transition: all 0.3s ease-out;
+
+	&.entering {
+		opacity: 1;
+		transform: translateY(-20px);
+	}
+
+	&.entered {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+
+	&.exiting {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+}

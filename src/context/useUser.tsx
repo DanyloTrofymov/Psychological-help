@@ -11,11 +11,11 @@ import {
 } from 'react';
 
 import { Navbar } from '@/components/navbar/Navbar';
-import { AuthResponse } from '@/dto/auth/auth.response';
+import { AuthResponse } from '@/data/dto/auth/auth.response';
 
 import { getUser } from '../api/auth/auth.api';
+import { CurrentUserResponse } from '../data/dto/user/userInfo';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../data/localStorageKeys';
-import { CurrentUserResponse } from '../dto/user/userInfo';
 
 type Properties = {
 	children: ReactNode;

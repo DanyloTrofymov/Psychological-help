@@ -1,0 +1,20 @@
+.container {
+	padding: 20px;
+}
+
+.quiz-card {
+	background-color: #cdeccd;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.media {
+	margin-top: 10px;
+
+	img {
+		width: 100%;
+		height: auto;
+	}
+}

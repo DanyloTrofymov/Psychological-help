@@ -1,0 +1,7 @@
+.card-content {
+	flex-grow: 1; // Allow the content to expand within the card
+}
+
+.media {
+	object-fit: cover; // Ensure the media fills the card without stretching
+}

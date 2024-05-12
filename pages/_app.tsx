@@ -6,6 +6,7 @@ import { AppProps } from 'next/app';
 import { SnackbarProvider } from 'notistack';
 import { useEffect, useState } from 'react';
 
+import ErrorBoundary from '@/components/errorBoundary/ErrorBoundary';
 import { UserContextProvider } from '@/context/useUser';
 
 import { darkTheme, lightTheme } from '../styles/mui.theme';
@@ -22,9 +23,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<ThemeProvider theme={theme}>
 			<SnackbarProvider>
-				<UserContextProvider>
-					<Component {...pageProps} />
-				</UserContextProvider>
+				<ErrorBoundary>
+					<UserContextProvider>
+						<Component {...pageProps} />
+					</UserContextProvider>
+				</ErrorBoundary>
 			</SnackbarProvider>
 		</ThemeProvider>
 	);

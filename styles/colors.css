@@ -4,4 +4,10 @@
 	--light-gray: rgb(175, 175, 175);
 	--green: rgb(120, 220, 185);
 	--green-hover: rgb(105, 190, 160);
+	--secondary-blue: #90CAF9;
+	--transparent-secondary-blue: #90caf933;
+	--button-hover: #42A5F5;
+	--button-active: #329AEE;
+	--button-disabled: #C6CED5;
+	--red: #FD3636;
 }

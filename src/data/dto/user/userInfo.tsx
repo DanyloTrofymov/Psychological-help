@@ -5,9 +5,22 @@ export interface CurrentUserResponse {
 	updatedAt: Date;
 	active: boolean;
 	avatarId: number;
-	Avatar: MediaResponse;
+	avatar: MediaResponse;
+	role: RoleResponse;
+}
+export interface RoleResponse {
+	id: number;
+	name: string;
+	key: ROLE;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
+export enum ROLE {
+	USER = 'USER',
+	ADMIN = 'ADMIN',
+	THERAPIST = 'THERAPIST'
+}
 export interface MediaResponse {
 	id: number;
 	url: string;

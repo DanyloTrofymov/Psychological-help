@@ -1,25 +1,40 @@
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
-    Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  height: 100%;
+	padding: 0;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
+		Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+	height: 100%;
 }
 
 #__next {
-  height: 100%;
+	height: 100%;
 }
 
 a {
-  color: blue !important;
-  text-decoration: underline;
+	color: blue !important;
+	text-decoration: underline;
 }
 
 a:visited {
-  color: blue !important;
+	color: blue !important;
 }
 
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+input::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type=number] {
+	-moz-appearance: textfield;
+	appearance: textfield;
 }
