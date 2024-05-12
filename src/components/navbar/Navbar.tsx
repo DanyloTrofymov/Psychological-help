@@ -2,6 +2,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Avatar, Box, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
 import useUser from '@/context/useUser';
@@ -11,6 +12,7 @@ import styles from './navbar.module.scss';
 
 export function Navbar(): JSX.Element {
 	const { user } = useUser();
+	const router = useRouter();
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 	const [isPictureAvailable, setIsPictureAvailable] = useState(false);
 	const ref = useRef<HTMLElement>(null);
@@ -47,12 +49,14 @@ export function Navbar(): JSX.Element {
 					<Stack direction="row" className={styles.accountContainer}>
 						<Avatar
 							src={isPictureAvailable ? user?.avatar?.url : undefined}
+							onClick={() => router.push('/')}
 							sx={{
 								backgroundColor: 'var(--light-gray)',
 								color: 'white',
 								mr: 1,
 								height: 30,
-								width: 30
+								width: 30,
+								cursor: 'pointer'
 							}}
 						>
 							<PersonIcon />

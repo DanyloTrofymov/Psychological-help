@@ -33,7 +33,7 @@ const QuizLayout = () => {
 			{user?.role.key === ROLE.ADMIN && (
 				<Button
 					variant="contained"
-					onClick={() => router.push('/tests/create')}
+					onClick={() => router.push('/tests/manage')}
 					sx={{ mb: 2 }}
 				>
 					Створити тест
