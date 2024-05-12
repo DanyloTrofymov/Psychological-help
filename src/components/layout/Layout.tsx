@@ -28,7 +28,10 @@ export function Layout({
 	};
 
 	const handleAccess = async () => {
-		if (!user) return;
+		if (!user) {
+			setIsLoadingToCheckUser(false);
+			return;
+		}
 		const key = Object.keys(privatePages).find(key => {
 			const page = privatePages[key];
 			return router.pathname.includes(page.route);
@@ -56,14 +59,12 @@ export function Layout({
 	}, [router, user]);
 
 	useEffect(() => {
-		if (!user) return;
 		checkLinks();
 	}, [checkLinks, user]);
 
 	useEffect(() => {
-		if (!user) return;
 		checkUserPermission();
-	}, [checkUserPermission, user]);
+	}, [checkUserPermission]);
 
 	return (
 		<>
