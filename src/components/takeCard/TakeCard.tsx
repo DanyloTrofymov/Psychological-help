@@ -2,10 +2,10 @@ import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import { getQuizById } from '@/api/quiz/quiz';
+import { getQuizById } from '@/api/quiz.api';
 import CenteredLoader from '@/components/custom/CenteredLoader';
-import { QuizResponse } from '@/data/dto/quiz/quiz';
-import { TakeResponse } from '@/data/dto/take/take';
+import { QuizResponse } from '@/data/dto/quiz/quiz.response';
+import { TakeResponse } from '@/data/dto/take/take.response';
 
 import styles from '../quizCard/quizCard.module.scss';
 
@@ -46,7 +46,7 @@ const TakeCard: React.FC<TakeCardProps> = ({ take }) => {
 			<Card
 				className={styles.quizCard}
 				sx={{ height: '100%' }}
-				onClick={() => router.push(`/overview/${take.id}`)}
+				onClick={() => router.push(`/tests/overview/${take.id}`)}
 			>
 				<CardMedia
 					component={'img'}

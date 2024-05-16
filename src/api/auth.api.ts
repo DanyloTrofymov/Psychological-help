@@ -3,7 +3,7 @@ import axios, { isAxiosError } from 'axios';
 import { AUTH_REQUEST } from '@/data/apiConstants';
 import { AuthRequest } from '@/data/dto/auth/auth.request';
 
-import axiosInstance from '../axiosInstance/axios.instance';
+import axiosInstance from './axios.instance';
 
 export const signIn = async (data: AuthRequest) => {
 	try {

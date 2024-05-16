@@ -4,9 +4,9 @@ export enum MESSAGE_TYPE {
 	WARNING = 'warning'
 }
 
-export const quizCreateSuccess = 'Quiz created successfully';
-export const quizCreateError = 'Quiz creation failed';
-export const quizUpdateSuccess = 'Quiz updated successfully';
-export const quizUpdateError = 'Quiz update failed';
-export const UPLOAD_MEDIA = 'Media uploaded successfully';
-export const SOMETHING_WENT_WRONG = 'Something went wrong';
+export const quizCreateSuccess = 'Тест успішно створено';
+export const quizCreateError = 'Створення тесту не вдалося';
+export const quizUpdateSuccess = 'Тест успішно оновлено';
+export const quizUpdateError = 'Оновлення тесту не вдалося';
+export const UPLOAD_MEDIA = 'Медіа завантажено';
+export const SOMETHING_WENT_WRONG = 'Щось пішло не так';

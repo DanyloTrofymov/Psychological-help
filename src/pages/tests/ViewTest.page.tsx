@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	FormControlLabel,
 	Radio,
 	RadioGroup,
@@ -11,11 +10,14 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 
-import { getQuizById } from '@/api/quiz/quiz';
-import { getTakeById } from '@/api/take/take';
+import { sentTakeToAI, sentTakeToTherapist } from '@/api/chatroom.api';
+import { getQuizById } from '@/api/quiz.api';
+import { getTakeById } from '@/api/take.api';
+import Button from '@/components/custom/Button';
 import CenteredLoader from '@/components/custom/CenteredLoader';
-import { QuizResponse } from '@/data/dto/quiz/quiz';
-import { TakeResponse } from '@/data/dto/take/take';
+import SendToChatModal from '@/components/sendToChatModal/sendToChatModal';
+import { QuizResponse } from '@/data/dto/quiz/quiz.response';
+import { TakeResponse } from '@/data/dto/take/take.response';
 import { MESSAGE_TYPE, SOMETHING_WENT_WRONG } from '@/data/messageData';
 
 import styles from '../../components/manageQuiz/quizForm.module.scss';
@@ -26,6 +28,7 @@ const ViewTestForm = () => {
 	const [takeId, setTakeId] = useState<string | undefined>(undefined);
 	const [take, setTake] = useState<TakeResponse | undefined>(undefined);
 	const [quiz, setQuiz] = useState<QuizResponse | undefined>(undefined);
+	const [openModal, setOpenModal] = useState(false);
 
 	useEffect(() => {
 		const takeId = router.query.id as string;
@@ -79,6 +82,30 @@ const ViewTestForm = () => {
 			}
 		}
 	}, [take]);
+
+	const onAiSubmit = async () => {
+		if (!take?.id) return;
+		const response = await sentTakeToAI(take?.id);
+		if (response.status === 201) {
+			router.push(`/chats/ai?chatId${response.data.id}`);
+		} else {
+			enqueueSnackbar(SOMETHING_WENT_WRONG, {
+				variant: MESSAGE_TYPE.ERROR
+			});
+		}
+	};
+
+	const onTherapistSubmit = async () => {
+		if (!take?.id) return;
+		const response = await sentTakeToTherapist(take?.id);
+		if (response.status === 201) {
+			router.push(`/chats/therapist?chatId${response.data.id}`);
+		} else {
+			enqueueSnackbar(SOMETHING_WENT_WRONG, {
+				variant: MESSAGE_TYPE.ERROR
+			});
+		}
+	};
 
 	const score = take?.answers.reduce((acc, answer) => {
 		const question = quiz?.questions.find(q =>
@@ -135,9 +162,20 @@ const ViewTestForm = () => {
 				<Typography variant="h1">Опис</Typography>
 				<Typography variant="h3">{quiz?.summary}</Typography>
 			</Stack>
-			<Button variant="contained" onClick={() => router.push('/tests')}>
-				Назад
-			</Button>
+			<Stack direction={'row'} justifyContent={'space-between'}>
+				<Button variant="contained" onClick={() => router.push('/tests')}>
+					Назад
+				</Button>
+				<Button variant="contained" onClick={() => setOpenModal(true)}>
+					Надіслати результат у чат
+				</Button>
+			</Stack>
+			<SendToChatModal
+				open={openModal}
+				onClose={() => setOpenModal(false)}
+				onAiSubmit={onAiSubmit}
+				onTherapistSubmit={onTherapistSubmit}
+			/>
 		</Box>
 	);
 };

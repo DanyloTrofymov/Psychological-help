@@ -4,3 +4,4 @@ export const AUTH_REQUEST = `${HOST_ADDRESS}/auth`;
 export const QUIZ_REQUEST = `${HOST_ADDRESS}/quiz`;
 export const MEDIA_REQUEST = `${HOST_ADDRESS}/media`;
 export const TAKE_REQUEST = `${HOST_ADDRESS}/take`;
+export const CHAT_REQUEST = `${HOST_ADDRESS}/chat`;

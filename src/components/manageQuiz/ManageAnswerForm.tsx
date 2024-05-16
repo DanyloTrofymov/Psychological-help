@@ -4,7 +4,7 @@ import { FormikErrors, FormikTouched } from 'formik';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import { QuizEntity, QuizQuestionEntity } from '@/data/entities/quiz.entity';
+import { QuizQuestionRequest, QuizRequest } from '@/data/dto/quiz/quiz.request';
 
 import Button from '../custom/Button';
 import styles from './quizForm.module.scss';
@@ -18,20 +18,20 @@ const AnswerForm = ({
 	touched,
 	handleBlur
 }: {
-	question: QuizQuestionEntity;
+	question: QuizQuestionRequest;
 	setFieldValue: (
 		field: string,
 		value: any,
 		shouldValidate?: boolean | undefined
-	) => Promise<void> | Promise<FormikErrors<QuizEntity>>;
+	) => Promise<void> | Promise<FormikErrors<QuizRequest>>;
 	handleChange: (e: React.ChangeEvent<any>) => void;
 	handleBlur: {
 		(e: FocusEvent): void;
 		<T = any>(fieldOrEvent: T): T extends string ? (e: any) => void : void;
 	};
 	questionIndex: number;
-	errors: FormikErrors<QuizEntity>;
-	touched: FormikTouched<QuizEntity>;
+	errors: FormikErrors<QuizRequest>;
+	touched: FormikTouched<QuizRequest>;
 }) => {
 	const [animationClasses, setAnimationClasses] = useState<string[]>([]);
 
@@ -87,7 +87,7 @@ const AnswerForm = ({
 					>
 						<TextField
 							name={`questions[${questionIndex}].answers[${idx}].title`}
-							label="Answer Title"
+							label="Тест відповіді"
 							onChange={handleChange}
 							value={question.answers[idx].title}
 							sx={{ width: '100%' }}
@@ -111,6 +111,12 @@ const AnswerForm = ({
 								)
 							}
 							helperText={
+								touched?.questions &&
+								touched?.questions[questionIndex] &&
+								touched?.questions[questionIndex]?.answers &&
+								touched?.questions[questionIndex]?.answers?.length &&
+								(touched?.questions[questionIndex] as any)?.answers[idx]
+									?.title &&
 								errors?.questions &&
 								errors?.questions[questionIndex] &&
 								(errors?.questions[questionIndex] as any)?.answers &&
@@ -121,10 +127,40 @@ const AnswerForm = ({
 						<TextField
 							type="number"
 							name={`questions[${questionIndex}].answers[${idx}].score`}
-							label="Score"
+							label="Бали"
+							required
 							onChange={handleChange}
 							value={question.answers[idx].score}
-							sx={{ width: '68px' }}
+							sx={{ width: '90px' }}
+							error={
+								touched?.questions &&
+								touched?.questions[questionIndex] &&
+								touched?.questions[questionIndex]?.answers &&
+								touched?.questions[questionIndex]?.answers?.length &&
+								(touched?.questions[questionIndex] as any)?.answers[idx]
+									?.score &&
+								Boolean(
+									errors?.questions &&
+										errors?.questions[questionIndex] &&
+										(errors?.questions[questionIndex] as any)?.answers &&
+										(errors?.questions[questionIndex] as any).answers?.length &&
+										(errors?.questions[questionIndex] as any)?.answers[idx]
+											?.score
+								)
+							}
+							helperText={
+								touched?.questions &&
+								touched?.questions[questionIndex] &&
+								touched?.questions[questionIndex]?.answers &&
+								touched?.questions[questionIndex]?.answers?.length &&
+								(touched?.questions[questionIndex] as any)?.answers[idx]
+									?.score &&
+								errors?.questions &&
+								errors?.questions[questionIndex] &&
+								(errors?.questions[questionIndex] as any)?.answers &&
+								(errors?.questions[questionIndex] as any).answers?.length &&
+								(errors?.questions[questionIndex] as any)?.answers[idx]?.score
+							}
 						/>
 						{!router.query.id && (
 							<Box sx={{ pt: 1 }}>
@@ -144,7 +180,7 @@ const AnswerForm = ({
 					onClick={() => handleAddAnswer()}
 					sx={{ m: 2, mt: 0, width: 'max-content' }}
 				>
-					Add Answer
+					Додати відповідь
 				</Button>
 			)}
 		</Box>

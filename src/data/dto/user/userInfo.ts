@@ -1,4 +1,4 @@
-export interface CurrentUserResponse {
+export interface UserResponse {
 	id: number;
 	name: string;
 	createdAt: Date;
@@ -12,8 +12,6 @@ export interface RoleResponse {
 	id: number;
 	name: string;
 	key: ROLE;
-	createdAt: Date;
-	updatedAt: Date;
 }
 
 export enum ROLE {

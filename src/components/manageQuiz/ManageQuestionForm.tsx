@@ -4,7 +4,7 @@ import { FormikErrors, FormikTouched } from 'formik/dist/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import { QuizEntity } from '@/data/entities/quiz.entity';
+import { QuizRequest } from '@/data/dto/quiz/quiz.request';
 
 import Button from '../custom/Button';
 import AnswerForm from './ManageAnswerForm';
@@ -18,15 +18,15 @@ const QuestionForm = ({
 	touched,
 	errors
 }: {
-	values: QuizEntity;
+	values: QuizRequest;
 	setFieldValue: (
 		field: string,
 		value: any,
 		shouldValidate?: boolean | undefined
-	) => Promise<void> | Promise<FormikErrors<QuizEntity>>;
+	) => Promise<void> | Promise<FormikErrors<QuizRequest>>;
 	handleChange: (e: React.ChangeEvent<any>) => void;
-	errors: FormikErrors<QuizEntity>;
-	touched: FormikTouched<QuizEntity>;
+	errors: FormikErrors<QuizRequest>;
+	touched: FormikTouched<QuizRequest>;
 	handleBlur: {
 		(e: FocusEvent): void;
 		<T = any>(fieldOrEvent: T): T extends string ? (e: any) => void : void;
@@ -89,7 +89,8 @@ const QuestionForm = ({
 				>
 					<TextField
 						name={`questions[${index}].title`}
-						label="Question Title"
+						label="Заголовок"
+						required
 						onBlur={handleBlur(`questions[${index}].title`)}
 						onChange={handleChange}
 						value={values.questions[index].title}
@@ -110,7 +111,7 @@ const QuestionForm = ({
 					/>
 					<TextField
 						name={`questions[${index}].subtitle`}
-						label="Question Subtitle"
+						label="Підзаголовок"
 						onChange={handleChange}
 						onBlur={handleBlur(`questions[${index}].subtitle`)}
 						value={values.questions[index].subtitle}
@@ -149,7 +150,7 @@ const QuestionForm = ({
 									}}
 									sx={{ m: 2, ml: 3 }}
 								>
-									Add Question
+									Додати запитання
 								</Button>
 								<IconButton
 									sx={{

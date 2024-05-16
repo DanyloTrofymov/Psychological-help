@@ -1,21 +1,21 @@
-export interface QuizEntity {
+export interface QuizRequest {
 	title: string;
 	summary?: string;
 	subtitle?: string;
 	mediaId?: number;
 	media?: MediaEntity;
-	questions: QuizQuestionEntity[];
+	questions: QuizQuestionRequest[];
 }
 
-export interface QuizQuestionEntity {
+export interface QuizQuestionRequest {
 	title: string;
 	subtitle?: string;
 	mediaId?: number;
-	answers: QuizAnswerEntity[];
+	answers: QuizAnsweRequest[];
 	media?: MediaEntity;
 }
 
-export interface QuizAnswerEntity {
+export interface QuizAnsweRequest {
 	title: string;
 	score: number;
 	mediaId?: number;

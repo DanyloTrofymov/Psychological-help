@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { signIn } from '@/api/auth/auth.api';
+import { signIn } from '@/api/auth.api';
 import useUser from '@/context/useUser';
 import { BOT_NAME } from '@/data/apiConstants';
 

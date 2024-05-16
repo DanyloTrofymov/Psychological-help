@@ -1,7 +1,7 @@
-import { QuizEntity } from '../entities/quiz.entity';
-import { TakeEntity } from '../entities/take.entity';
+import { QuizRequest } from '../dto/quiz/quiz.request';
+import { TakeRequest } from '../dto/take/take.request';
 
-export const quizInitial: QuizEntity = {
+export const quizInitial: QuizRequest = {
 	title: '',
 	subtitle: '',
 	mediaId: undefined,
@@ -18,7 +18,7 @@ export const quizInitial: QuizEntity = {
 	]
 };
 
-export const takeInitial: TakeEntity = {
+export const takeInitial: TakeRequest = {
 	quizId: 0,
 	answers: []
 };

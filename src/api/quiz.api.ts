@@ -1,17 +1,19 @@
 import { QUIZ_REQUEST } from '@/data/apiConstants';
-import { QuizEntity } from '@/data/entities/quiz.entity';
+import { QuizRequest } from '@/data/dto/quiz/quiz.request';
 
-import axios from '../axiosInstance/axios.instance';
+import axios from './axios.instance';
 
-export const getQuizzes = async () => {
+export const getQuizzes = async (page: number = 0, pageSize: number = 10) => {
 	try {
-		return await axios.get(QUIZ_REQUEST);
+		return await axios.get(QUIZ_REQUEST, {
+			params: { page, pageSize }
+		});
 	} catch (e) {
 		console.error(e);
 	}
 };
 
-export const createQuiz = async (quiz: QuizEntity) => {
+export const createQuiz = async (quiz: QuizRequest) => {
 	try {
 		return await axios.post(QUIZ_REQUEST, quiz);
 	} catch (e) {
@@ -19,7 +21,10 @@ export const createQuiz = async (quiz: QuizEntity) => {
 	}
 };
 
-export const updateQuiz = async (quizId: number | string, quiz: QuizEntity) => {
+export const updateQuiz = async (
+	quizId: number | string,
+	quiz: QuizRequest
+) => {
 	try {
 		return await axios.patch(`${QUIZ_REQUEST}/${quizId}`, quiz);
 	} catch (e) {

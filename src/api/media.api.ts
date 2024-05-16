@@ -1,6 +1,6 @@
 import { MEDIA_REQUEST } from '@/data/apiConstants';
 
-import axios from '../axiosInstance/axios.instance';
+import axios from './axios.instance';
 
 export const uploadFileToStorage = async (file: File) => {
 	try {

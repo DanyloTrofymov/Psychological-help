@@ -11,9 +11,9 @@ import {
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-import { deleteQuiz } from '@/api/quiz/quiz';
+import { deleteQuiz } from '@/api/quiz.api';
 import useUser from '@/context/useUser';
-import { QuizResponse } from '@/data/dto/quiz/quiz';
+import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { ROLE } from '@/data/dto/user/userInfo';
 
 import AlertDialog from '../alertDialog/AlertDialog';

@@ -21,6 +21,11 @@ export const privatePages: PrivatePages = {
 		route: '/tests[id]',
 		title: 'Tests',
 		roles: [ROLE.USER, ROLE.ADMIN]
+	},
+	chat: {
+		route: '/chat',
+		title: 'Chat',
+		roles: [ROLE.USER, ROLE.THERAPIST, ROLE.ADMIN]
 	}
 };
 

@@ -2,7 +2,7 @@ import axios, { isAxiosError } from 'axios';
 
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/data/localStorageKeys';
 
-import { getTokens } from '../auth/auth.api';
+import { getTokens } from './auth.api';
 
 const instance = axios.create();
 

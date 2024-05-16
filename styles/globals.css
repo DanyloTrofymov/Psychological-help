@@ -38,3 +38,11 @@ input[type=number] {
 	-moz-appearance: textfield;
 	appearance: textfield;
 }
+
+.MuiList-root a {
+	text-decoration: none !important;
+}
+
+.MuiListItem-root:has(.MuiListItemSecondaryAction-root) {
+	background-color: #90CAF955;
+}

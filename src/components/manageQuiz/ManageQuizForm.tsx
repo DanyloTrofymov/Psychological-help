@@ -7,9 +7,9 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 
-import { uploadFileToStorage } from '@/api/media/media.api';
-import { createQuiz, getQuizById, updateQuiz } from '@/api/quiz/quiz';
-import { QuizResponse } from '@/data/dto/quiz/quiz';
+import { uploadFileToStorage } from '@/api/media.api';
+import { createQuiz, getQuizById, updateQuiz } from '@/api/quiz.api';
+import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { MediaResponse } from '@/data/dto/user/userInfo';
 import { quizInitial } from '@/data/initialValues/quizInitial';
 import {
@@ -93,7 +93,11 @@ const QuizForm = () => {
 	const totalScore: number = useMemo(() => {
 		return values.questions.reduce((acc, question) => {
 			return (
-				acc + question.answers.reduce((acc, answer) => acc + answer.score, 0)
+				acc +
+				question.answers.reduce(
+					(acc, answer) => (answer.score ? acc + Number(answer.score) : 0),
+					0
+				)
 			);
 		}, 0);
 	}, [values.questions]);
@@ -161,13 +165,14 @@ const QuizForm = () => {
 					<TextField
 						className={styles.field}
 						name="title"
-						label="Quiz Title"
+						label="Назва"
 						onChange={handleChange}
 						onBlur={handleBlur('title')}
 						sx={{ width: '100%' }}
 						value={values.title}
 						error={touched.title && Boolean(errors.title)}
 						helperText={touched.title && errors.title}
+						required
 					/>
 					{mediaUrl ? (
 						<Box height={100}>
@@ -205,7 +210,7 @@ const QuizForm = () => {
 				<TextField
 					className={styles.field}
 					name="subtitle"
-					label="Quiz Subtitle"
+					label="Опис"
 					onBlur={handleBlur('subtitle')}
 					onChange={handleChange}
 					value={values.subtitle}
@@ -221,11 +226,12 @@ const QuizForm = () => {
 					values={values}
 					errors={errors}
 				/>
-				<Typography>Total score: {totalScore}</Typography>
+				<Typography>Максимум балів: {totalScore}</Typography>
 				<TextField
 					className={styles.field}
 					name="summary"
-					label="Quiz Summary"
+					label="Опис результатів"
+					multiline
 					onChange={handleChange}
 					onBlur={handleBlur('summary')}
 					value={values.summary}
@@ -242,15 +248,15 @@ const QuizForm = () => {
 					disabled={!!quizId}
 					sx={{ m: 2, ml: 3 }}
 				>
-					Add Question
+					Додати питання
 				</Button>
 			) : values.questions.length === 1 ? (
 				<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14, pl: 3 }}>
-					{'Add at least 2 questions'}
+					{'Необхідно додати ще питання'}
 				</Typography>
 			) : (
 				<Button variant="contained" onClick={() => submitForm()}>
-					Submit Quiz
+					{quizId ? 'Оновити' : 'Створити'}
 				</Button>
 			)}
 			{}

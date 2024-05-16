@@ -12,11 +12,11 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 
-import { getQuizById } from '@/api/quiz/quiz';
-import { createTake } from '@/api/take/take';
+import { getQuizById } from '@/api/quiz.api';
+import { createTake } from '@/api/take.api';
 import Button from '@/components/custom/Button';
 import CenteredLoader from '@/components/custom/CenteredLoader';
-import { QuizResponse } from '@/data/dto/quiz/quiz';
+import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { takeInitial } from '@/data/initialValues/quizInitial';
 import { MESSAGE_TYPE, SOMETHING_WENT_WRONG } from '@/data/messageData';
 import { TakeSchema } from '@/data/validation/takeValidation';
@@ -39,7 +39,7 @@ const PassTestForm = () => {
 		}
 		const response: any = await createTake(values);
 		if (response && response.status === 201) {
-			router.push('/tests/ovewview/' + response.id);
+			router.push('/tests/overview/' + response.data.id);
 		} else {
 			enqueueSnackbar(SOMETHING_WENT_WRONG, {
 				variant: MESSAGE_TYPE.ERROR
@@ -116,7 +116,7 @@ const PassTestForm = () => {
 						<Stack direction="column" spacing={1}>
 							{errors.answers?.[questionIndex] && (
 								<FormHelperText error>
-									Please answer this question.
+									Дайте відповідь на це запитання.
 								</FormHelperText>
 							)}
 							<RadioGroup

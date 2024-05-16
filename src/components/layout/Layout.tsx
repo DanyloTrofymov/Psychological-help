@@ -74,7 +74,10 @@ export function Layout({
 			</Head>
 			<ErrorBoundary>
 				<div>
-					<main className={cn(styles.main, !outerPage && styles.mainInner)}>
+					<main
+						className={cn(styles.main, !outerPage && styles.mainInner)}
+						id="scrollableLayout"
+					>
 						{isLoading || isLoadingToCheckUser ? <CenteredLoader /> : children}
 					</main>
 				</div>

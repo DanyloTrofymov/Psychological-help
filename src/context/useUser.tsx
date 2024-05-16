@@ -10,12 +10,14 @@ import {
 	useMemo,
 	useState
 } from 'react';
+import { io, Socket } from 'socket.io-client';
 
 import { Navbar } from '@/components/navbar/Navbar';
+import { HOST_ADDRESS } from '@/data/apiConstants';
 import { AuthResponse } from '@/data/dto/auth/auth.response';
 
-import { getUser } from '../api/auth/auth.api';
-import { CurrentUserResponse } from '../data/dto/user/userInfo';
+import { getUser } from '../api/auth.api';
+import { UserResponse } from '../data/dto/user/userInfo';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../data/localStorageKeys';
 
 type Properties = {
@@ -23,10 +25,11 @@ type Properties = {
 };
 
 interface Context {
-	user: CurrentUserResponse | null;
-	getUserData: () => Promise<CurrentUserResponse | undefined>;
+	user: UserResponse | null;
+	getUserData: () => Promise<UserResponse | undefined>;
 	setJwtTokens: (jwtData: AuthResponse) => void;
 	logout: () => void;
+	socket: Socket | null;
 }
 
 const UserContext = createContext<Context | null>(null);
@@ -34,14 +37,15 @@ const UserContext = createContext<Context | null>(null);
 const useUser = () => useContext(UserContext) as Context;
 
 export const UserContextProvider: FC<Properties> = ({ children }) => {
-	const [userData, setUserData] = useState<CurrentUserResponse | null>(null);
+	const [userData, setUserData] = useState<UserResponse | null>(null);
+	const [socket, setSocket] = useState<Socket | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const router = useRouter();
 	const setJwtTokens = (jwtData: AuthResponse) => {
 		if (jwtData) {
-			getUserData();
 			localStorage.setItem(ACCESS_TOKEN, jwtData.accessToken);
 			localStorage.setItem(REFRESH_TOKEN, jwtData.refreshToken);
+			getUserData();
 		} else {
 			localStorage.removeItem(ACCESS_TOKEN);
 			localStorage.removeItem(REFRESH_TOKEN);
@@ -61,7 +65,7 @@ export const UserContextProvider: FC<Properties> = ({ children }) => {
 			setUserData(response.data);
 		}
 		setIsLoading(false);
-		return (response?.data as CurrentUserResponse) || null;
+		return (response?.data as UserResponse) || null;
 	}, []);
 
 	// useEffect(() => {
@@ -78,6 +82,18 @@ export const UserContextProvider: FC<Properties> = ({ children }) => {
 	// }, [user]);
 
 	useEffect(() => {
+		const socket = io(HOST_ADDRESS + '/chat', {
+			transports: ['websocket', 'polling'],
+			withCredentials: true,
+			autoConnect: true,
+			auth: {
+				token: localStorage.getItem(ACCESS_TOKEN)
+			}
+		});
+		setSocket(socket);
+	}, [userData]);
+
+	useEffect(() => {
 		const token = localStorage.getItem(ACCESS_TOKEN);
 		if (token) {
 			getUserData();
@@ -91,9 +107,10 @@ export const UserContextProvider: FC<Properties> = ({ children }) => {
 			user: userData,
 			getUserData,
 			setJwtTokens,
-			logout
+			logout,
+			socket
 		}),
-		[userData, getUserData, setJwtTokens]
+		[userData, getUserData, setJwtTokens, socket, logout]
 	);
 
 	return isLoading ? (

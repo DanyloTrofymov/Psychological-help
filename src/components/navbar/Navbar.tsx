@@ -25,7 +25,7 @@ export function Navbar(): JSX.Element {
 					await axios.get(user.avatar.url);
 					setIsPictureAvailable(true);
 				} catch (error) {
-					console.error(error);
+					setIsPictureAvailable(false);
 				}
 			}
 		};
@@ -41,7 +41,7 @@ export function Navbar(): JSX.Element {
 		<Box className={styles.navbar}>
 			<AccountMenu anchorEl={anchorEl} onClose={() => setAnchorEl(null)} />
 			<Box
-				sx={{ width: ref?.current?.clientWidth, ml: 1, cursor: 'poiter' }}
+				sx={{ ml: 1, cursor: 'pointer', width: '70px', height: '70px' }}
 				onClick={() => router.push('/')}
 			>
 				<Image src={'/logo-white.svg'} alt="logo" width={70} height={70} />

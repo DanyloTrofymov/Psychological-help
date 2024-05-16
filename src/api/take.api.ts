@@ -1,7 +1,7 @@
 import { TAKE_REQUEST } from '@/data/apiConstants';
-import { TakeEntity } from '@/data/entities/take.entity';
+import { TakeRequest } from '@/data/dto/take/take.request';
 
-import axios from '../axiosInstance/axios.instance';
+import axios from './axios.instance';
 
 export const getMyTake = async () => {
 	try {
@@ -19,7 +19,7 @@ export const getTakeById = async (id: string | number) => {
 	}
 };
 
-export const createTake = async (take: TakeEntity) => {
+export const createTake = async (take: TakeRequest) => {
 	try {
 		return await axios.post(TAKE_REQUEST, {
 			quizId: take.quizId,
