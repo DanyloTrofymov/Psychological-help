@@ -175,15 +175,6 @@ const QuestionForm = ({
 								>
 									Додати запитання
 								</Button>
-
-								<Button
-									onClick={() => {
-										handleAddQuestion(index);
-									}}
-									sx={{ m: 2, ml: 3 }}
-								>
-									Додати запитання
-								</Button>
 								<Box>
 									<IconButton
 										sx={{
