@@ -1,11 +1,11 @@
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { IconButton, Stack, TextField, Typography } from '@mui/material';
+import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
 import { FormikErrors, FormikTouched } from 'formik/dist/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import { QuizRequest } from '@/data/dto/quiz/quiz.request';
-
+import { QuizQuestionRequest, QuizRequest } from '@/data/dto/quiz/quiz.request';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Button from '../custom/Button';
 import AnswerForm from './ManageAnswerForm';
 import styles from './quizForm.module.scss';
@@ -64,6 +64,29 @@ const QuestionForm = ({
 		}, 300); // Animation duration
 	};
 
+	const handleCloneQuestion = (index: number) => {
+		const newQuestions = [
+			...values.questions.slice(0, index + 1),
+			{
+				title: values.questions[index].title,
+				subtitle: values.questions[index].subtitle,
+				answers: values.questions[index].answers
+			},
+			...values.questions.slice(index + 1)
+		];
+		setFieldValue('questions', newQuestions);
+		setAnimationClasses([
+			...animationClasses.slice(0, index + 1),
+			'entering',
+			...animationClasses.slice(index + 1)
+		]);
+		setTimeout(() => {
+			setAnimationClasses(current =>
+				current.map((cls, idx) => (idx === index + 1 ? 'entered' : cls))
+			);
+		}, 300); // Animation duration
+	};
+
 	const handleRemoveQuestion = (index: number) => {
 		setAnimationClasses(current =>
 			current.map((cls, idx) => (idx === index ? 'exiting' : cls))
@@ -99,7 +122,7 @@ const QuestionForm = ({
 							touched?.questions[index]?.title &&
 							Boolean(
 								errors.questions &&
-									((errors.questions[index] as any)?.title as string)
+								((errors.questions[index] as any)?.title as string)
 							)
 						}
 						helperText={
@@ -120,7 +143,7 @@ const QuestionForm = ({
 							touched?.questions[index] &&
 							Boolean(
 								errors.questions &&
-									((errors.questions[index] as any)?.subtitle as string)
+								((errors.questions[index] as any)?.subtitle as string)
 							)
 						}
 						helperText={
@@ -152,18 +175,42 @@ const QuestionForm = ({
 								>
 									Додати запитання
 								</Button>
-								<IconButton
-									sx={{
-										mr: 2,
-										height: '35px',
-										width: '35px'
-									}}
+
+								<Button
 									onClick={() => {
-										handleRemoveQuestion(index);
+										handleAddQuestion(index);
 									}}
+									sx={{ m: 2, ml: 3 }}
 								>
-									<DeleteOutlineIcon />
-								</IconButton>
+									Додати запитання
+								</Button>
+								<Box>
+									<IconButton
+										sx={{
+											mr: 2,
+											height: '35px',
+											width: '35px'
+										}}
+										onClick={() => {
+											handleCloneQuestion(index);
+										}}
+									>
+										<ContentCopyIcon />
+									</IconButton>
+									<IconButton
+										sx={{
+											mr: 2,
+											height: '35px',
+											width: '35px'
+										}}
+										onClick={() => {
+											handleRemoveQuestion(index);
+										}}
+									>
+										<DeleteOutlineIcon />
+									</IconButton>
+
+								</Box>
 							</>
 						)}
 					</Stack>

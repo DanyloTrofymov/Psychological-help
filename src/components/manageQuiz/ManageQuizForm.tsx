@@ -91,16 +91,16 @@ const QuizForm = () => {
 	});
 
 	const totalScore: number = useMemo(() => {
-		return values.questions.reduce((acc, question) => {
-			return (
-				acc +
-				question.answers.reduce(
-					(acc, answer) => (answer.score ? acc + Number(answer.score) : 0),
-					0
-				)
+		return values.questions.reduce((totalScore, question) => {
+			const maxAnswerScore = question.answers.reduce(
+				(max, answer) => Math.max(max, answer.score),
+				0
 			);
+			return totalScore + maxAnswerScore;
 		}, 0);
 	}, [values.questions]);
+
+
 
 	const handleUploadMedia = async (file: File) => {
 		if (file) {
