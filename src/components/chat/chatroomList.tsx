@@ -156,9 +156,11 @@ const ChatRoomList = ({
 										<EditIcon className={styles.listIcon} />
 									</Box>
 								)}
-								<Box onClick={() => handleDeleteChatroom(room.id)}>
-									<DeleteIcon className={styles.listIcon} />
-								</Box>
+								{[0, 1, 4, 5].includes(tab) && (
+									<Box onClick={() => handleDeleteChatroom(room.id)}>
+										<DeleteIcon className={styles.listIcon} />
+									</Box>
+								)}
 							</Stack>
 						</ListItem>
 					))}

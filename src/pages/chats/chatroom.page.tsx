@@ -48,7 +48,7 @@ const ChatRoom = () => {
 			const response = await refetchFunc(currentPage, 20);
 			if (response.status == 200 && response.data) {
 				setChatrooms(prev => [...prev, ...response.data]);
-				if (response.data.length > 0) setCurrentChatroom(response.data[0].id);
+				if (response.data.length > 0) setCurrentChatroom(response.data[0]);
 			}
 		} catch (error) {
 			console.error('Error fetching chatrooms:', error);
@@ -120,8 +120,11 @@ const ChatRoom = () => {
 
 	const isParticipant = useMemo(() => {
 		const chat = chatrooms.find(chatroom => chatroom.id === chatroom?.id);
-		return chat?.ChatroomParticipants.some(p => p.userId === user?.id) || false;
+		return (
+			chat?.ChatroomParticipants?.some(p => p.userId === user?.id) || false
+		);
 	}, [currentChatroom, chatrooms]);
+
 	return (
 		<Box
 			sx={{
@@ -158,6 +161,7 @@ const ChatRoom = () => {
 							selectedTab={selectedTab}
 							currentChatroom={currentChatroom}
 							isParticipant={isParticipant}
+							setCurrentTab={setSelectedTab}
 						/>
 					)}
 				</Box>

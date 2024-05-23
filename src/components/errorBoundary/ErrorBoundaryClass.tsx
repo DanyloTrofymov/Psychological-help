@@ -95,7 +95,7 @@ class ErrorBoundaryClass extends Component<Props, State> {
 							gap: 3
 						}}
 					>
-						<Image src={'/logo.svg'} alt="logo" />
+						<Image src={'/logo-black.svg'} alt="logo" />
 						<Typography>Oops, there is an error!</Typography>
 						<Typography
 							variant="h1"

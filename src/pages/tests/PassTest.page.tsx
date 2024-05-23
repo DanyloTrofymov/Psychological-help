@@ -46,7 +46,7 @@ const PassTestForm = () => {
 			});
 		}
 	};
-	const { values, setFieldValue, submitForm, handleBlur, errors } = useFormik({
+	const { values, setFieldValue, submitForm, errors } = useFormik({
 		initialValues: takeInitial,
 		validationSchema: TakeSchema,
 		validateOnChange: false,
@@ -132,7 +132,6 @@ const PassTestForm = () => {
 										question.id
 									);
 								}}
-								onBlur={handleBlur}
 							>
 								{question.answers.map((answer, answerIndex) => (
 									<FormControlLabel
@@ -148,7 +147,7 @@ const PassTestForm = () => {
 				))}
 			</Stack>
 			<Button variant="contained" onClick={() => submitForm()}>
-				Submit Quiz
+				Завершити
 			</Button>
 		</Box>
 	);

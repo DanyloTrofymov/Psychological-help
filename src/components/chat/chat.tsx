@@ -17,9 +17,15 @@ interface ChatProps {
 	selectedTab: number;
 	currentChatroom: ChatroomResponse | null;
 	isParticipant: boolean;
+	setCurrentTab: (tab: number) => void;
 }
 
-const Chat = ({ selectedTab, currentChatroom, isParticipant }: ChatProps) => {
+const Chat = ({
+	selectedTab,
+	currentChatroom,
+	isParticipant,
+	setCurrentTab
+}: ChatProps) => {
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [message, setMessage] = useState('');
 	const [aiMessage, setAiMessage] = useState<string>('');
@@ -85,12 +91,14 @@ const Chat = ({ selectedTab, currentChatroom, isParticipant }: ChatProps) => {
 	const handleJoin = async () => {
 		if (!currentChatroom?.id) return;
 		const response = await joinChatroom(currentChatroom?.id);
-		if (response.status == 200 && response.data) {
+		if (response.status == 201 && response.data) {
 			if (selectedTab === 3) {
-				router.push(`/chat/clients?chatId${response.data.id}`);
+				router.push(`/chats/clients?chatId=${response.data.id}`);
+				setCurrentTab(2);
 			}
 			if (selectedTab === 5) {
-				router.push(`/chat/my?chatId${response.data.id}`);
+				router.push(`/chats/my?chatId=${response.data.id}`);
+				setCurrentTab(4);
 			}
 		} else {
 			setMessages([]);
@@ -132,6 +140,7 @@ const Chat = ({ selectedTab, currentChatroom, isParticipant }: ChatProps) => {
 			]);
 		}
 	};
+
 	return (
 		<Box sx={{ display: 'flex', flexDirection: 'column' }}>
 			{messages.length === 0 ? (
@@ -192,19 +201,18 @@ const Chat = ({ selectedTab, currentChatroom, isParticipant }: ChatProps) => {
 				!isParticipant ? (
 					<>
 						{currentChatroom?.ChatroomParticipants?.some(
-							p =>
-								!p.aiThreadId && (
-									<Button
-										onClick={handleJoin}
-										variant="contained"
-										color="primary"
-										id={'send'}
-										sx={{ ml: 3 }}
-										disabled={!!aiMessage}
-									>
-										Приєднатися до чату
-									</Button>
-								)
+							p => !p.aiThreadId
+						) && (
+							<Button
+								onClick={handleJoin}
+								variant="contained"
+								color="primary"
+								id={'send'}
+								sx={{ ml: 3 }}
+								disabled={!!aiMessage}
+							>
+								Приєднатися до чату
+							</Button>
 						)}
 					</>
 				) : (
