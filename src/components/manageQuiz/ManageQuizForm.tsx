@@ -100,8 +100,6 @@ const QuizForm = () => {
 		}, 0);
 	}, [values.questions]);
 
-
-
 	const handleUploadMedia = async (file: File) => {
 		if (file) {
 			try {

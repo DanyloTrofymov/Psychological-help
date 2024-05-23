@@ -1,11 +1,12 @@
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
 import { FormikErrors, FormikTouched } from 'formik/dist/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import { QuizQuestionRequest, QuizRequest } from '@/data/dto/quiz/quiz.request';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { QuizRequest } from '@/data/dto/quiz/quiz.request';
+
 import Button from '../custom/Button';
 import AnswerForm from './ManageAnswerForm';
 import styles from './quizForm.module.scss';
@@ -122,7 +123,7 @@ const QuestionForm = ({
 							touched?.questions[index]?.title &&
 							Boolean(
 								errors.questions &&
-								((errors.questions[index] as any)?.title as string)
+									((errors.questions[index] as any)?.title as string)
 							)
 						}
 						helperText={
@@ -143,7 +144,7 @@ const QuestionForm = ({
 							touched?.questions[index] &&
 							Boolean(
 								errors.questions &&
-								((errors.questions[index] as any)?.subtitle as string)
+									((errors.questions[index] as any)?.subtitle as string)
 							)
 						}
 						helperText={
@@ -200,7 +201,6 @@ const QuestionForm = ({
 									>
 										<DeleteOutlineIcon />
 									</IconButton>
-
 								</Box>
 							</>
 						)}
