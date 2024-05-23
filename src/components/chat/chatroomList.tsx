@@ -97,21 +97,25 @@ const ChatRoomList = ({
 				onClose={() => setRenameData(null)}
 				onSubmit={handleRename}
 			/>
-			<ListItemButton
-				onClick={handleCreateChatroom}
-				color="primary"
-				sx={{
-					justifyContent: 'flex-start !important',
-					backgroundColor: 'var(--green)',
-					'&: hover': {
-						backgroundColor: 'var(--green-hover) !important'
-					}
-				}}
-				className={cn(styles.listItem)}
-			>
-				<AddIcon />
-				{tab === 0 ? 'Створити чат з асистентом' : 'Створити чат з терапевтом'}
-			</ListItemButton>
+			{[0, 1].includes(tab) && (
+				<ListItemButton
+					onClick={handleCreateChatroom}
+					color="primary"
+					sx={{
+						justifyContent: 'flex-start !important',
+						backgroundColor: 'var(--green)',
+						'&: hover': {
+							backgroundColor: 'var(--green-hover) !important'
+						}
+					}}
+					className={cn(styles.listItem)}
+				>
+					<AddIcon />
+					{tab === 0
+						? 'Створити чат з асистентом'
+						: 'Створити чат з терапевтом'}
+				</ListItemButton>
+			)}
 			<List
 				dense
 				sx={{
