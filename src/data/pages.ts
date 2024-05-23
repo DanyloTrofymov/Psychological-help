@@ -12,6 +12,11 @@ export const publicPages: PublicPages = {
 };
 
 export const privatePages: PrivatePages = {
+	testStatistic: {
+		route: '/tests/statistic',
+		title: 'Tests',
+		roles: [ROLE.ADMIN]
+	},
 	manageTests: {
 		route: '/tests/manage',
 		title: 'Tests',

@@ -10,8 +10,10 @@ export interface QuizResponse {
 	maxScore: number;
 	media?: MediaResponse;
 	questions: QuizQuestionResponse[];
+	lastTakeId?: number;
 	_count: {
 		questions: number;
+		take: number;
 	};
 }
 

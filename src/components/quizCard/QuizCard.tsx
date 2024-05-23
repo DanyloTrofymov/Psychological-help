@@ -1,11 +1,15 @@
 import DeleteIcon from '@mui/icons-material/Delete';
+import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
 	Card,
 	CardContent,
 	CardMedia,
 	IconButton,
 	Stack,
+	Tooltip,
 	Typography
 } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -15,6 +19,7 @@ import { deleteQuiz } from '@/api/quiz.api';
 import useUser from '@/context/useUser';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { ROLE } from '@/data/dto/user/userInfo';
+import { getQuestionWordForm } from '@/data/utils';
 
 import AlertDialog from '../alertDialog/AlertDialog';
 import LoginModal from '../loginModal/loginModal';
@@ -65,30 +70,99 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 				/>
 				<CardContent>
 					<Stack direction="row" justifyContent={'space-between'}>
-						<Stack direction="column">
+						<Stack direction="column" width={'100%'}>
 							<Typography variant="h5" gutterBottom>
 								{quiz.title}
 							</Typography>
+
 							{quiz.subtitle && (
 								<Typography variant="subtitle1">{quiz.subtitle}</Typography>
 							)}
+							<Typography variant="subtitle1">
+								{getQuestionWordForm(quiz._count.questions)}
+							</Typography>
+							<Tooltip
+								title={
+									<Typography variant="subtitle1">
+										Цей тест пройшли {quiz._count.take} разів
+									</Typography>
+								}
+							>
+								<Stack
+									direction="row"
+									alignItems={'center'}
+									width={'max-content'}
+								>
+									<VisibilityIcon sx={{ mr: 1 }} />
+									<Typography variant="subtitle1">
+										{quiz._count.take}
+									</Typography>
+								</Stack>
+							</Tooltip>
 						</Stack>
-						{visible && user?.role.key === ROLE.ADMIN && (
-							<Stack direction="row">
-								<IconButton
-									onClick={() => router.push(`/tests/manage/${quiz.id}`)}
-									sx={{ height: '45px', width: '45px' }}
+						<Stack direction="row" alignItems="center" height="max-content">
+							{visible && user?.role.key === ROLE.ADMIN && (
+								<>
+									<IconButton
+										onClick={e => {
+											e.stopPropagation();
+											router.push(`/tests/statistic/${quiz.id}`);
+										}}
+										sx={{ height: '45px', width: '45px' }}
+									>
+										<LeaderboardIcon />
+									</IconButton>
+									<IconButton
+										onClick={e => {
+											e.stopPropagation();
+											router.push(`/tests/manage/${quiz.id}`);
+										}}
+										sx={{ height: '45px', width: '45px' }}
+									>
+										<EditIcon />
+									</IconButton>
+									<IconButton
+										onClick={e => {
+											e.stopPropagation();
+											setIsDeleting(true);
+										}}
+										sx={{ height: '45px', width: '45px' }}
+									>
+										<DeleteIcon />
+									</IconButton>
+								</>
+							)}
+							{quiz.lastTakeId && (
+								<Tooltip
+									title={
+										<>
+											<Typography variant="subtitle1">
+												Ви вже пройшли цей тест
+											</Typography>
+											<Typography
+												variant="subtitle2"
+												sx={{
+													textDecoration: 'underline',
+													cursor: 'pointer',
+													'&:hover': {
+														cursor: 'pointer',
+														color: 'blue'
+													}
+												}}
+												onClick={e => {
+													e.stopPropagation();
+													router.push(`/tests/overview/${quiz.lastTakeId}`);
+												}}
+											>
+												Переглянути результати
+											</Typography>
+										</>
+									}
 								>
-									<EditIcon />
-								</IconButton>
-								<IconButton
-									onClick={() => setIsDeleting(true)}
-									sx={{ height: '45px', width: '45px' }}
-								>
-									<DeleteIcon />
-								</IconButton>
-							</Stack>
-						)}
+									<DoneIcon color="success" sx={{ height: '45px' }} />
+								</Tooltip>
+							)}
+						</Stack>
 					</Stack>
 				</CardContent>
 			</Card>

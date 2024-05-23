@@ -46,3 +46,11 @@ export const deleteQuiz = async (id: string | number) => {
 		console.error(e);
 	}
 };
+
+export const getStatistic = async (id: string | number) => {
+	try {
+		return await axios.get(`${QUIZ_REQUEST}/statistics/${id}`);
+	} catch (e) {
+		console.error(e);
+	}
+};
