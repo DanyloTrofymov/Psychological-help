@@ -76,9 +76,20 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 							</Typography>
 
 							{quiz.subtitle && (
-								<Typography variant="subtitle1">{quiz.subtitle}</Typography>
+								<Typography
+									variant="subtitle1"
+									sx={{
+										overflow: 'hidden',
+										textOverflow: 'ellipsis',
+										display: '-webkit-box',
+										WebkitLineClamp: '3',
+										WebkitBoxOrient: 'vertical'
+									}}
+								>
+									{quiz.subtitle}
+								</Typography>
 							)}
-							<Typography variant="subtitle1">
+							<Typography variant="subtitle1" fontWeight={600}>
 								{getQuestionWordForm(quiz._count.questions)}
 							</Typography>
 							<Tooltip

@@ -1,5 +1,5 @@
 import PersonIcon from '@mui/icons-material/Person';
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Stack, Typography, useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -18,6 +18,7 @@ export function Navbar(): JSX.Element {
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 	const [isPictureAvailable, setIsPictureAvailable] = useState(false);
 	const ref = useRef<HTMLElement>(null);
+	const smallScreen = useMediaQuery('(max-width: 560px)');
 	useEffect(() => {
 		const fetchPicture = async () => {
 			if (user) {
@@ -46,10 +47,12 @@ export function Navbar(): JSX.Element {
 			>
 				<Image src={'/logo-white.svg'} alt="logo" width={70} height={70} />
 			</Box>
-			<Typography variant="h1" sx={{ justifySelf: 'center' }}>
-				Час подбати про себе. Почніть піклуватися про своє здоров&apos;я вже
-				зараз.
-			</Typography>
+			{!smallScreen && (
+				<Typography variant="h1" sx={{ justifySelf: 'center' }}>
+					Час подбати про себе. Почніть піклуватися про своє здоров&apos;я вже
+					зараз.
+				</Typography>
+			)}
 			<Box sx={{ justifySelf: 'flex-end', mr: 1 }} ref={ref}>
 				{!isLoggingIn ? (
 					<TelegramLoginWidget />

@@ -60,7 +60,18 @@ const TakeCard: React.FC<TakeCardProps> = ({ take }) => {
 						{quiz.title}
 					</Typography>
 					{quiz.subtitle && (
-						<Typography variant="subtitle1">{quiz.subtitle}</Typography>
+						<Typography
+							sx={{
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								display: '-webkit-box',
+								WebkitLineClamp: '3',
+								WebkitBoxOrient: 'vertical'
+							}}
+							variant="subtitle1"
+						>
+							{quiz.subtitle}
+						</Typography>
 					)}
 					<Typography variant="subtitle2">
 						Результат: {score} з {quiz.maxScore}
