@@ -43,12 +43,19 @@ class ErrorBoundaryClass extends Component<Props, State> {
 	}
 
 	public handleTryAgain(): void {
-		this.setState({ ...this.state, errorMessage: '', showMore: false });
+		this.setState(prevState => ({
+			...prevState,
+			errorMessage: '',
+			showMore: false
+		}));
 		this.props.router.reload();
 	}
 
 	public showMoreInfo(): void {
-		this.setState({ ...this.state, showMore: true });
+		this.setState(prevState => ({
+			...prevState,
+			showMore: true
+		}));
 	}
 
 	public copyText(): void {
