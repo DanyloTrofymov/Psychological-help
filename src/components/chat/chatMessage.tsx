@@ -9,6 +9,14 @@ interface ChatMessageProps {
 	selectedTab: number;
 }
 
+const formatMessage = (message: string) => {
+	const formattedMessage = message.replaceAll('\n', '<br />');
+
+	return formattedMessage.replace(/\*\*(.*?)\*\*/g, (match, p1) => {
+		return `<b>${p1.trim()}</b>`;
+	});
+};
+
 const ChatMessage = ({ msg, user, selectedTab }: ChatMessageProps) => {
 	let avatarSrc;
 	let name;
@@ -23,6 +31,7 @@ const ChatMessage = ({ msg, user, selectedTab }: ChatMessageProps) => {
 		name = msg.user?.name;
 	}
 	const isCurrentUser = msg.userId === user?.id;
+
 	return (
 		<Stack
 			direction={isCurrentUser ? 'row-reverse' : 'row'}
@@ -61,9 +70,10 @@ const ChatMessage = ({ msg, user, selectedTab }: ChatMessageProps) => {
 						overflowWrap: 'break-word',
 						overflow: 'hidden'
 					}}
-				>
-					{msg.message}
-				</Typography>
+					dangerouslySetInnerHTML={{
+						__html: formatMessage(msg.message)
+					}}
+				/>
 			</Stack>
 		</Stack>
 	);
