@@ -89,6 +89,7 @@ const AnswerForm = ({
 							name={`questions[${questionIndex}].answers[${idx}].title`}
 							label="Тест відповіді"
 							onChange={handleChange}
+							required
 							value={question.answers[idx].title}
 							sx={{ width: '100%' }}
 							onBlur={handleBlur(

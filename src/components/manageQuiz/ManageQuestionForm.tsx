@@ -163,7 +163,7 @@ const QuestionForm = ({
 					/>
 					<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14, pl: 3 }}>
 						{values.questions[index].answers.length < 2 &&
-							'Add at least 2 answers'}
+							'Додайте мінімум 2 запитання'}
 					</Typography>
 					<Stack direction="row" spacing={2} justifyContent={'space-between'}>
 						{!router.query.id && (

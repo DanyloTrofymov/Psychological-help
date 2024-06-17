@@ -16,7 +16,7 @@ import Chat from '../../components/chat/chat';
 import ChatRoomList from '../../components/chat/chatroomList';
 
 const ChatRoom = () => {
-	const [selectedTab, setSelectedTab] = useState(0);
+	const [selectedTab, setSelectedTab] = useState(-1);
 	const [currentChatroom, setCurrentChatroom] =
 		useState<ChatroomResponse | null>(null);
 	const [chatrooms, setChatrooms] = useState<ChatroomResponse[]>([]);
@@ -25,6 +25,7 @@ const ChatRoom = () => {
 	const { user } = useUser();
 
 	const fetchChats = async () => {
+		if (selectedTab == -1) return;
 		try {
 			let refetchFunc;
 			switch (selectedTab) {
@@ -48,7 +49,6 @@ const ChatRoom = () => {
 			const response = await refetchFunc(currentPage, 20);
 			if (response.status == 200 && response.data) {
 				setChatrooms(prev => [...prev, ...response.data]);
-				if (response.data.length > 0) setCurrentChatroom(response.data[0]);
 			}
 		} catch (error) {
 			console.error('Error fetching chatrooms:', error);
@@ -56,6 +56,7 @@ const ChatRoom = () => {
 	};
 
 	useEffect(() => {
+		if (!router.isReady || selectedTab == -1) return;
 		setCurrentPage(0);
 		setChatrooms([]);
 		fetchChats();
@@ -81,9 +82,9 @@ const ChatRoom = () => {
 					newRoute = '/chats/all';
 					break;
 			}
-			router.replace(newRoute, undefined, { shallow: false });
+			router.replace(newRoute, undefined, { shallow: true });
 		}
-	}, [selectedTab]);
+	}, [selectedTab, router.isReady]);
 
 	useEffect(() => {
 		if (currentPage === 0) return;
@@ -93,30 +94,37 @@ const ChatRoom = () => {
 	useEffect(() => {
 		if (!router.isReady) return;
 		const pathname = router.pathname;
-		if (pathname == '/chats/ai') {
+		if (pathname == '/chats/ai' && selectedTab !== 0) {
 			setSelectedTab(0);
-		} else if (pathname == '/chats/therapist') {
+		} else if (pathname == '/chats/therapist' && selectedTab !== 1) {
 			setSelectedTab(1);
-		} else if (pathname == '/chats/clients') {
+		} else if (pathname == '/chats/clients' && selectedTab !== 2) {
 			setSelectedTab(2);
-		} else if (pathname == '/chats/requests') {
+		} else if (pathname == '/chats/requests' && selectedTab !== 3) {
 			setSelectedTab(3);
-		} else if (pathname == '/chats/my') {
+		} else if (pathname == '/chats/my' && selectedTab !== 4) {
 			setSelectedTab(4);
-		} else if (pathname == '/chats/all') {
+		} else if (pathname == '/chats/all' && selectedTab !== 5) {
 			setSelectedTab(5);
-		}
-		const chatroomId = parseInt(router.query.chatId as string);
-		if (chatroomId) {
-			const chatroom = chatrooms.find(chatroom => chatroom.id === chatroomId);
-			setCurrentChatroom(chatroom || null);
 		}
 	}, [router.isReady]);
 
 	useEffect(() => {
 		if (!currentChatroom) return;
-		router.push({ query: { chatId: currentChatroom?.id } });
+		router.push({ query: { chatId: currentChatroom?.id } }, undefined, {
+			shallow: true
+		});
 	}, [currentChatroom]);
+
+	useEffect(() => {
+		const chatroomId = parseInt(router.query.chatId as string);
+		if (chatroomId) {
+			const chatroom = chatrooms.find(chatroom => chatroom.id === chatroomId);
+			setCurrentChatroom(chatroom || null);
+		} else if (chatrooms.length > 0) {
+			setCurrentChatroom(chatrooms[0]);
+		}
+	}, [chatrooms]);
 
 	const isParticipant = useMemo(() => {
 		const chat = chatrooms.find(chatroom => chatroom.id === chatroom?.id);

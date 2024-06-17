@@ -29,6 +29,7 @@ const ViewTestForm = () => {
 	const [take, setTake] = useState<TakeResponse | undefined>(undefined);
 	const [quiz, setQuiz] = useState<QuizResponse | undefined>(undefined);
 	const [openModal, setOpenModal] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		const takeId = router.query.id as string;
@@ -85,22 +86,28 @@ const ViewTestForm = () => {
 
 	const onAiSubmit = async () => {
 		if (!take?.id) return;
+		setOpenModal(false);
+		setIsLoading(true);
 		const response = await sentTakeToAI(take?.id);
 		if (response.status === 201) {
-			router.push(`/chats/ai?chatId${response.data.id}`);
+			router.push(`/chats/ai?chatId=${response.data.id}`);
 		} else {
 			enqueueSnackbar(SOMETHING_WENT_WRONG, {
 				variant: MESSAGE_TYPE.ERROR
 			});
+			setIsLoading(false);
 		}
 	};
 
 	const onTherapistSubmit = async () => {
 		if (!take?.id) return;
+		setOpenModal(false);
+		setIsLoading(true);
 		const response = await sentTakeToTherapist(take?.id);
 		if (response.status === 201) {
-			router.push(`/chats/therapist?chatId${response.data.id}`);
+			router.push(`/chats/therapist?chatId=${response.data.id}`);
 		} else {
+			setIsLoading(false);
 			enqueueSnackbar(SOMETHING_WENT_WRONG, {
 				variant: MESSAGE_TYPE.ERROR
 			});
@@ -172,6 +179,7 @@ const ViewTestForm = () => {
 			</Stack>
 			<SendToChatModal
 				open={openModal}
+				isLoading={isLoading}
 				onClose={() => setOpenModal(false)}
 				onAiSubmit={onAiSubmit}
 				onTherapistSubmit={onTherapistSubmit}

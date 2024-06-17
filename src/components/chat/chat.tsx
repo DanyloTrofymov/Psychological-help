@@ -1,5 +1,6 @@
 // components/Chat.tsx
-import { Box, TextField, Typography } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
+import { Box, TextField, Tooltip, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -217,6 +218,24 @@ const Chat = ({
 					</>
 				) : (
 					<>
+						{selectedTab === 0 && (
+							<Tooltip
+								title={
+									<Typography variant="h4">
+										Повідомлення у цьому чаті генеруються за допомогою штучного
+										інтелекту. Ми докладаємо всіх зусиль для забезпечення
+										високої якості та точності наданих консультацій. Однак, слід
+										пам&aposятати, що відповіді, надані штучним інтелектом, не
+										замінюють професійних консультацій кваліфікованого психолога
+										чи психотерапевта. Рекомендуємо звертатися до фахівців для
+										отримання більш детальної та індивідуальної допомоги у
+										складних чи критичних ситуаціях.
+									</Typography>
+								}
+							>
+								<InfoIcon sx={{ mr: 1 }} />
+							</Tooltip>
+						)}
 						<TextField
 							value={message}
 							disabled={!!aiMessage}

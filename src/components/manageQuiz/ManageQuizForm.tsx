@@ -1,7 +1,7 @@
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
-import { useFormik } from 'formik';
+import { FormikErrors, useFormik } from 'formik';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { uploadFileToStorage } from '@/api/media.api';
 import { createQuiz, getQuizById, updateQuiz } from '@/api/quiz.api';
+import { QuizQuestionRequest } from '@/data/dto/quiz/quiz.request';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { MediaResponse } from '@/data/dto/user/userInfo';
 import { quizInitial } from '@/data/initialValues/quizInitial';
@@ -151,6 +152,25 @@ const QuizForm = () => {
 			fetchQuiz();
 		}
 	}, [quizId]);
+	const hasError = useMemo(() => {
+		return (
+			(!!errors.title ||
+				!!errors.subtitle ||
+				!!errors.summary ||
+				!!errors?.questions?.length ||
+				(errors?.questions as FormikErrors<QuizQuestionRequest>[])?.some(
+					q => !!q?.answers?.length
+				)) &&
+			(!!touched.title ||
+				!!touched.subtitle ||
+				!!touched.summary ||
+				!!touched?.questions?.length ||
+				(touched?.questions as FormikErrors<QuizQuestionRequest>[])?.some(
+					q => !!q?.answers?.length
+				))
+		);
+	}, [errors, touched]);
+
 	return (
 		<Box onSubmit={submitForm} className={styles.quizForm}>
 			<UploadMedia
@@ -229,6 +249,7 @@ const QuizForm = () => {
 					className={styles.field}
 					name="summary"
 					label="Опис результатів"
+					required
 					multiline
 					onChange={handleChange}
 					onBlur={handleBlur('summary')}
@@ -238,6 +259,11 @@ const QuizForm = () => {
 				/>
 			</Stack>
 
+			{!!hasError && (
+				<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14 }}>
+					{'Зaповність всі необхідні поля'}
+				</Typography>
+			)}
 			{!values.questions.length ? (
 				<Button
 					onClick={() => {
@@ -249,7 +275,7 @@ const QuizForm = () => {
 					Додати питання
 				</Button>
 			) : values.questions.length === 1 ? (
-				<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14, pl: 3 }}>
+				<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14 }}>
 					{'Необхідно додати ще питання'}
 				</Typography>
 			) : (

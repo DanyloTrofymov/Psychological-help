@@ -94,6 +94,7 @@ const PassTestForm = () => {
 	if (!quiz) {
 		return <CenteredLoader />;
 	}
+
 	return (
 		<Box className={styles.quizForm}>
 			<Stack direction="column" spacing={2} sx={{ pb: 2 }}>
@@ -146,6 +147,11 @@ const PassTestForm = () => {
 					</Stack>
 				))}
 			</Stack>
+			{!!errors?.answers && (
+				<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14 }}>
+					{'Заповність усі необхідні поля'}
+				</Typography>
+			)}
 			<Button variant="contained" onClick={() => submitForm()}>
 				Завершити
 			</Button>

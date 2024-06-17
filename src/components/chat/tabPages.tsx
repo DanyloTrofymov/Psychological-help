@@ -45,7 +45,7 @@ const TabPages = ({ selectedTab, setSelectedTab }: TabPagesProps) => {
 					newRoute = '/chats/all';
 					break;
 			}
-			router.replace(newRoute, undefined, { shallow: false });
+			router.replace(newRoute, undefined, { shallow: true });
 		}
 	};
 
