@@ -179,9 +179,9 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 			</Card>
 			<AlertDialog
 				open={isDeleting}
-				title="Delete Quiz"
-				text="Are you sure you want to delete this quiz?"
-				agreeButtonText="Delete"
+				title="Видалити тест,"
+				text="Ви впевнені, щл хочете видалити цей тест?"
+				agreeButtonText="Видалити"
 				onCancel={() => setIsDeleting(false)}
 				onAccept={() => handleDeleteQuiz()}
 			/>

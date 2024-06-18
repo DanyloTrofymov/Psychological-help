@@ -18,14 +18,14 @@ type Props = DialogProps & {
 	isWaiting?: boolean;
 	dialogProps?: any;
 	buttonColor?:
-		| 'inherit'
-		| 'error'
-		| 'primary'
-		| 'secondary'
-		| 'success'
-		| 'info'
-		| 'warning'
-		| undefined;
+	| 'inherit'
+	| 'error'
+	| 'primary'
+	| 'secondary'
+	| 'success'
+	| 'info'
+	| 'warning'
+	| undefined;
 };
 
 export default function AlertDialog({
@@ -71,7 +71,7 @@ export default function AlertDialog({
 					onClick={onCancel}
 					sx={{ mr: 'auto' }}
 				>
-					Cancel
+					Відмінити
 				</Button>
 				<Button
 					onClick={onAccept}
@@ -82,7 +82,7 @@ export default function AlertDialog({
 					{isWaiting ? (
 						<CircularProgress size={24} />
 					) : (
-						agreeButtonText || 'Agree'
+						agreeButtonText || 'Так'
 					)}
 				</Button>
 			</DialogActions>
