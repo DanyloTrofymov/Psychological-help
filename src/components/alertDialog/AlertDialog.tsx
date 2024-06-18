@@ -18,14 +18,14 @@ type Props = DialogProps & {
 	isWaiting?: boolean;
 	dialogProps?: any;
 	buttonColor?:
-	| 'inherit'
-	| 'error'
-	| 'primary'
-	| 'secondary'
-	| 'success'
-	| 'info'
-	| 'warning'
-	| undefined;
+		| 'inherit'
+		| 'error'
+		| 'primary'
+		| 'secondary'
+		| 'success'
+		| 'info'
+		| 'warning'
+		| undefined;
 };
 
 export default function AlertDialog({
