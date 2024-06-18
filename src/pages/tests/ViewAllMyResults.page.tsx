@@ -24,7 +24,7 @@ const QuizLayout = () => {
 
 	useEffect(() => {
 		fetchTakes();
-	}, [currentPage]);
+	}, []);
 
 	return (
 		<div>
