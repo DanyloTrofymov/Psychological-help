@@ -1,8 +1,15 @@
+import { AxiosResponse } from 'axios';
+
 import { CHAT_REQUEST } from '@/data/apiConstants';
+import { PaginatedResponse } from '@/data/dto';
+import { ChatroomResponse, Message } from '@/data/dto/chat/chat.response';
 
 import axios from './axios.instance';
 
-export const getAiChats = async (page: number = 0, pageSize: number = 20) => {
+export const getAiChats = async (
+	page: number = 0,
+	pageSize: number = 20
+): Promise<AxiosResponse<PaginatedResponse<ChatroomResponse>>> => {
 	try {
 		return await axios.get(`${CHAT_REQUEST}/aiChats`, {
 			params: { page, pageSize }
@@ -16,7 +23,7 @@ export const getAiChats = async (page: number = 0, pageSize: number = 20) => {
 export const getUsersChats = async (
 	page: number = 0,
 	pageSize: number = 20
-) => {
+): Promise<AxiosResponse<PaginatedResponse<ChatroomResponse>>> => {
 	try {
 		return await axios.get(`${CHAT_REQUEST}/usersChats`, {
 			params: { page, pageSize }
@@ -30,7 +37,7 @@ export const getUsersChats = async (
 export const getWithoutTherapis = async (
 	page: number = 0,
 	pageSize: number = 20
-) => {
+): Promise<AxiosResponse<PaginatedResponse<ChatroomResponse>>> => {
 	try {
 		return await axios.get(`${CHAT_REQUEST}/withoutTherapis`, {
 			params: { page, pageSize }
@@ -41,7 +48,10 @@ export const getWithoutTherapis = async (
 	}
 };
 
-export const getAllChats = async (page: number = 0, pageSize: number = 20) => {
+export const getAllChats = async (
+	page: number = 0,
+	pageSize: number = 20
+): Promise<AxiosResponse<PaginatedResponse<ChatroomResponse>>> => {
 	try {
 		return await axios.get(`${CHAT_REQUEST}`, {
 			params: { page, pageSize }
@@ -65,7 +75,7 @@ export const getMessages = async (
 	chatroomId: number,
 	page: number = 0,
 	pageSize: number = 10
-) => {
+): Promise<AxiosResponse<PaginatedResponse<Message>>> => {
 	try {
 		return await axios.get(`${CHAT_REQUEST}/messages`, {
 			params: { chatroomId, page, pageSize }

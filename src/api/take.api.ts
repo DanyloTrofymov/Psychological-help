@@ -1,13 +1,23 @@
+import { AxiosResponse } from 'axios';
+
 import { TAKE_REQUEST } from '@/data/apiConstants';
+import { PaginatedResponse } from '@/data/dto';
 import { TakeRequest } from '@/data/dto/take/take.request';
+import { TakeResponse } from '@/data/dto/take/take.response';
 
 import axios from './axios.instance';
 
-export const getMyTake = async () => {
+export const getMyTake = async (
+	page: number,
+	pageSize: number
+): Promise<AxiosResponse<PaginatedResponse<TakeResponse>>> => {
 	try {
-		return await axios.get(TAKE_REQUEST + '/my');
+		return await axios.get(
+			TAKE_REQUEST + '/my' + `?page=${page}&pageSize=${pageSize}`
+		);
 	} catch (e) {
 		console.error(e);
+		throw e;
 	}
 };
 

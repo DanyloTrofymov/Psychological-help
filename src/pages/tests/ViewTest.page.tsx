@@ -34,7 +34,7 @@ const ViewTestForm = () => {
 	useEffect(() => {
 		const takeId = router.query.id as string;
 		setTakeId(takeId);
-	}, [router.isReady]);
+	}, [router.isReady, router.query.id]);
 
 	useEffect(() => {
 		const fetchQuiz = async () => {

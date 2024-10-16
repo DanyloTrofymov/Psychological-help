@@ -13,9 +13,9 @@ const QuizLayout = () => {
 
 	const fetchTakes = async () => {
 		try {
-			const response = await getMyTake();
+			const response = await getMyTake(currentPage, 10);
 			if (response && response.status === 200) {
-				setTakes(prev => [...prev, ...response.data]);
+				setTakes(prev => [...prev, ...response.data.content]);
 			}
 		} catch (error) {
 			console.error(error);
@@ -24,7 +24,7 @@ const QuizLayout = () => {
 
 	useEffect(() => {
 		fetchTakes();
-	}, []);
+	}, [currentPage]);
 
 	return (
 		<div>

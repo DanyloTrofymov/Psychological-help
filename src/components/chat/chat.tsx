@@ -38,7 +38,7 @@ const Chat = ({
 		if (!currentChatroom?.id) return;
 		const response = await getMessages(currentChatroom?.id, currentPage, 20);
 		if (response.status == 200 && response.data) {
-			setMessages(response.data);
+			setMessages(prev => [...prev, ...response.data.content]);
 		} else {
 			setMessages([]);
 		}

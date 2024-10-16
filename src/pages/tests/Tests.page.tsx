@@ -23,7 +23,7 @@ const QuizLayout = () => {
 		try {
 			const response = await getQuizzes(currentPage, 10);
 			if (response && response.status === 200) {
-				setQuizzes(prev => [...prev, ...response.data]);
+				setQuizzes(prev => [...prev, ...response.data.content]);
 			}
 		} catch (error) {
 			console.error(error);
@@ -31,8 +31,10 @@ const QuizLayout = () => {
 	};
 
 	useEffect(() => {
-		fetchQuizzes();
-	}, [currentPage]);
+		if (fetchQuizzes) {
+			fetchQuizzes();
+		}
+	}, [currentPage, fetchQuizzes]);
 
 	return (
 		<div>

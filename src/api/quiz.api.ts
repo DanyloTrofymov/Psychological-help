@@ -1,15 +1,23 @@
+import { AxiosResponse } from 'axios';
+
 import { QUIZ_REQUEST } from '@/data/apiConstants';
+import { PaginatedResponse } from '@/data/dto';
 import { QuizRequest } from '@/data/dto/quiz/quiz.request';
+import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 
 import axios from './axios.instance';
 
-export const getQuizzes = async (page: number = 0, pageSize: number = 10) => {
+export const getQuizzes = async (
+	page: number = 0,
+	pageSize: number = 10
+): Promise<AxiosResponse<PaginatedResponse<QuizResponse>>> => {
 	try {
 		return await axios.get(QUIZ_REQUEST, {
 			params: { page, pageSize }
 		});
 	} catch (e) {
 		console.error(e);
+		throw e;
 	}
 };
 
