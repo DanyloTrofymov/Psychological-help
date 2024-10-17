@@ -2,7 +2,7 @@
 import InfoIcon from '@mui/icons-material/Info';
 import { Box, TextField, Tooltip, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { getMessages, joinChatroom, pingAdmin } from '@/api/chatroom.api';
@@ -32,17 +32,23 @@ const Chat = ({
 	const [aiMessage, setAiMessage] = useState<string>('');
 	const [currentPage, setCurrentPage] = useState(0);
 	const { user, socket } = useUser();
+	const [handleShift, setHandleShift] = useState(false);
+	const inputRef = useRef<HTMLInputElement>();
+	const buttonRef = useRef<HTMLButtonElement | null>(null);
 	const router = useRouter();
 
-	const fetchMessages = async () => {
-		if (!currentChatroom?.id) return;
-		const response = await getMessages(currentChatroom?.id, currentPage, 20);
-		if (response.status == 200 && response.data) {
-			setMessages(prev => [...prev, ...response.data.content]);
-		} else {
-			setMessages([]);
-		}
-	};
+	const fetchMessages = useCallback(
+		async (page: number) => {
+			if (!currentChatroom?.id) return;
+			const response = await getMessages(currentChatroom?.id, page, 20);
+			if (response.status == 200 && response.data) {
+				setMessages(prev => [...prev, ...response.data.content]);
+			} else {
+				setMessages([]);
+			}
+		},
+		[currentChatroom?.id]
+	);
 
 	useEffect(() => {
 		if (!socket) return;
@@ -59,7 +65,7 @@ const Chat = ({
 		);
 
 		socket.on('aiEndMessage', (data: Message) => {
-			setAiMessage('');
+			setAiMessage(() => '');
 			setMessages((prevMessages: Message[]) => [data, ...prevMessages]);
 		});
 
@@ -71,16 +77,21 @@ const Chat = ({
 	}, []);
 
 	useEffect(() => {
+		if (!currentChatroom) return;
 		setCurrentPage(0);
 		setMessages([]);
-		fetchMessages();
+		fetchMessages(0);
 		setAiMessage('');
 	}, [currentChatroom]);
 
 	const handleSend = () => {
-		if (!message || !socket || !currentChatroom) return;
-		const payload = { chatroomId: currentChatroom?.id, message };
-		setMessages([{ message: message, userId: user?.id }, ...messages]);
+		if (!message || !message.trim() || !socket || !currentChatroom) return;
+		const msg = message.trim();
+		const payload = { chatroomId: currentChatroom?.id, message: msg };
+		setMessages([
+			{ message: msg, userId: user?.id, createdAt: new Date() },
+			...messages
+		]);
 		if (selectedTab === 0) {
 			socket.emit('sendAiMessage', payload);
 		} else {
@@ -105,27 +116,44 @@ const Chat = ({
 			setMessages([]);
 		}
 	};
+
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (e.key === 'Shift') {
+			setHandleShift(true);
+		}
+	};
+
+	const handleKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (e.key === 'Shift') {
+			setHandleShift(false);
+		}
+	};
+
 	useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
+		const handleEnterDown = (event: KeyboardEvent) => {
+			if (handleShift) return;
 			if (event.key === 'Enter') {
-				const button = document.getElementById('send');
-				if (button) {
-					button.focus();
-					button.click();
+				if (buttonRef.current) {
+					buttonRef.current.focus();
+					buttonRef.current.click();
+				}
+				if (inputRef.current) {
+					inputRef.current.focus();
 				}
 			}
 		};
 
-		window.addEventListener('keydown', handleKeyDown);
+		window.addEventListener('keydown', handleEnterDown);
 
 		return () => {
-			window.removeEventListener('keydown', handleKeyDown);
+			window.removeEventListener('keydown', handleEnterDown);
 		};
-	}, []);
+	}, [buttonRef, inputRef, handleShift]);
 
-	const handlePagination = () => {
-		setCurrentPage(currentPage + 1);
-		fetchMessages();
+	const handlePagination = async () => {
+		const nextPage = currentPage + 1;
+		setCurrentPage(nextPage);
+		await fetchMessages(nextPage);
 	};
 
 	const handlePing = async () => {
@@ -237,6 +265,9 @@ const Chat = ({
 							</Tooltip>
 						)}
 						<TextField
+							onKeyDown={handleKeyDown}
+							onKeyUp={handleKeyUp}
+							inputRef={inputRef}
 							value={message}
 							disabled={!!aiMessage}
 							multiline
@@ -247,6 +278,7 @@ const Chat = ({
 							sx={{ flexGrow: 1, mb: 1 }}
 						/>
 						<Button
+							ref={buttonRef}
 							onClick={handleSend}
 							variant="contained"
 							color="primary"
