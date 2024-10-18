@@ -74,6 +74,24 @@ const ChatMessage = ({ msg, user, selectedTab }: ChatMessageProps) => {
 						__html: formatMessage(msg.message)
 					}}
 				/>
+				{msg?.createdAt && (
+					<Typography
+						sx={{
+							fontSize: 14,
+							fontWeight: 600,
+							padding: '0px 10px',
+							alignSelf: isCurrentUser ? 'flex-end' : 'flex-start',
+							color: '#5c5c5c'
+						}}
+					>
+						{new Intl.DateTimeFormat('en-GB', {
+							dateStyle: 'short',
+							timeStyle: 'short'
+						})
+							.format(new Date(msg?.createdAt))
+							.replaceAll('/', '.')}
+					</Typography>
+				)}
 			</Stack>
 		</Stack>
 	);

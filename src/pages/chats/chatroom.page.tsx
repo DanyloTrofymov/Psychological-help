@@ -48,7 +48,7 @@ const ChatRoom = () => {
 			}
 			const response = await refetchFunc(currentPage, 20);
 			if (response.status == 200 && response.data) {
-				setChatrooms(prev => [...prev, ...response.data]);
+				setChatrooms(prev => [...prev, ...response.data.content]);
 			}
 		} catch (error) {
 			console.error('Error fetching chatrooms:', error);
@@ -131,7 +131,7 @@ const ChatRoom = () => {
 		return (
 			chat?.ChatroomParticipants?.some(p => p.userId === user?.id) || false
 		);
-	}, [currentChatroom, chatrooms]);
+	}, [currentChatroom, chatrooms, user?.id]);
 
 	return (
 		<Box

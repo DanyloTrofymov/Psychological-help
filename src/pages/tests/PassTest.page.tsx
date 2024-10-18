@@ -83,14 +83,14 @@ const PassTestForm = () => {
 	}, [router.query.id]);
 
 	useEffect(() => {
-		if (quiz) {
+		if (quiz && setFieldValue) {
 			const answers = quiz.questions.map(question => ({
 				questionId: question.id,
 				answerId: undefined
 			}));
 			setFieldValue('answers', answers);
 		}
-	}, [quiz]);
+	}, [quiz, setFieldValue]);
 	if (!quiz) {
 		return <CenteredLoader />;
 	}
