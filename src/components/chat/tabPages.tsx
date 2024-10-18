@@ -56,11 +56,11 @@ const TabPages = ({ selectedTab, setSelectedTab }: TabPagesProps) => {
 			aria-label="chatroom tabs"
 		>
 			{user?.role.key === ROLE.USER && (
-				<Tab label="ШІ асистенти" {...a11yProps(0)} sx={{ flex: 1 }} />
+				<Tab label="ШІ асистент" {...a11yProps(0)} sx={{ flex: 1 }} />
 			)}
-			{user?.role.key === ROLE.USER && (
+			{/* {user?.role.key === ROLE.USER && (
 				<Tab label="Терапевт" {...a11yProps(1)} sx={{ flex: 1 }} />
-			)}
+			)} */}
 			{user?.role.key === ROLE.THERAPIST && (
 				<Tab label="Клієнти" {...a11yProps(2)} sx={{ flex: 1 }} />
 			)}
