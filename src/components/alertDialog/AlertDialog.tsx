@@ -6,7 +6,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import * as React from 'react';
 
-import Button from '../custom/Button';
+import { Button } from '@/components/ui/button';
 
 type Props = DialogProps & {
 	open: boolean;
@@ -69,16 +69,11 @@ export default function AlertDialog({
 				<Button
 					color={buttonColor ? buttonColor : 'error'}
 					onClick={onCancel}
-					sx={{ mr: 'auto' }}
+					className="mr-auto"
 				>
 					Відмінити
 				</Button>
-				<Button
-					onClick={onAccept}
-					autoFocus
-					variant="contained"
-					sx={{ ml: 'auto' }}
-				>
+				<Button onClick={onAccept} autoFocus className="ml-auto">
 					{isWaiting ? (
 						<CircularProgress size={24} />
 					) : (

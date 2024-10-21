@@ -1,6 +1,6 @@
 // components/Chat.tsx
 import InfoIcon from '@mui/icons-material/Info';
-import { Box, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Tooltip, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -10,8 +10,9 @@ import useUser from '@/context/useUser';
 import { ChatroomResponse, Message } from '@/data/dto/chat/chat.response';
 import { ROLE } from '@/data/dto/user/userInfo';
 
-import Button from '../custom/Button';
 import CenteredContainer from '../custom/CenteredContainer';
+import { Button } from '../ui/button';
+import { Textarea } from '../ui/textarea';
 import ChatMessage from './chatMessage';
 
 interface ChatProps {
@@ -33,7 +34,7 @@ const Chat = ({
 	const [currentPage, setCurrentPage] = useState(0);
 	const { user, socket } = useUser();
 	const [handleShift, setHandleShift] = useState(false);
-	const inputRef = useRef<HTMLInputElement>();
+	const inputRef = useRef<HTMLTextAreaElement | null>(null);
 	const buttonRef = useRef<HTMLButtonElement | null>(null);
 	const router = useRouter();
 
@@ -117,13 +118,13 @@ const Chat = ({
 		}
 	};
 
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		if (e.key === 'Shift') {
 			setHandleShift(true);
 		}
 	};
 
-	const handleKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+	const handleKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		if (e.key === 'Shift') {
 			setHandleShift(false);
 		}
@@ -234,10 +235,8 @@ const Chat = ({
 						) && (
 							<Button
 								onClick={handleJoin}
-								variant="contained"
-								color="primary"
-								id={'send'}
-								sx={{ ml: 3 }}
+								ref={buttonRef}
+								className="ml-3"
 								disabled={!!aiMessage}
 							>
 								Приєднатися до чату
@@ -264,26 +263,20 @@ const Chat = ({
 								<InfoIcon sx={{ mr: 1 }} />
 							</Tooltip>
 						)}
-						<TextField
+						<Textarea
 							onKeyDown={handleKeyDown}
 							onKeyUp={handleKeyUp}
-							inputRef={inputRef}
+							ref={inputRef}
 							value={message}
 							disabled={!!aiMessage}
-							multiline
 							onChange={e => setMessage(e.target.value)}
-							label="Повідомлення"
-							variant="outlined"
-							fullWidth
-							sx={{ flexGrow: 1, mb: 1 }}
+							placeholder="Повідомлення"
+							className="w-full mb-1 resize-none"
 						/>
 						<Button
+							className="ml-3"
 							ref={buttonRef}
 							onClick={handleSend}
-							variant="contained"
-							color="primary"
-							id={'send'}
-							sx={{ ml: 3 }}
 							disabled={!!aiMessage}
 						>
 							Надіслати

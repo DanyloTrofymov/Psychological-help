@@ -1,39 +1,39 @@
 .navbar {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	height: 100px;
-	background-color: var(--primary);
-	color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+  background-color: var(--primary-color);
+  color: #fff;
 }
 
 .accountContainer {
-	display: flex;
-	align-items: center;
-	background-color: var(--secondary);
-	padding: 5px 10px 5px 5px;
-	border-radius: 50px;
-	cursor: pointer;
+  display: flex;
+  align-items: center;
+  background-color: var(--secondary-color);
+  padding: 5px 10px 5px 5px;
+  border-radius: 50px;
+  cursor: pointer;
 }
 
 .logo {
-	/* Inherit border-radius from the image */
-	box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-	width: 70px;
-	height: 70px;
+  /* Inherit border-radius from the image */
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  width: 70px;
+  height: 70px;
 }
 
 .listItem {
-	margin: 0 10px;
-	width: 180px;
-	border-radius: 5px;
-	cursor: pointer;
+  margin: 0 10px;
+  width: 180px;
+  border-radius: 5px;
+  cursor: pointer;
 
-	& p {
-		margin: 0 10px;
-	}
+  & p {
+    margin: 0 10px;
+  }
 
-	&:hover {
-		background-color: rgba(0, 0, 0, 0.1);
-	}
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 }

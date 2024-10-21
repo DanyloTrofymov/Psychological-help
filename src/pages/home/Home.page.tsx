@@ -1,7 +1,7 @@
 import { Box, Stack } from '@mui/material';
 import { useRouter } from 'next/router';
 
-import Button from '@/components/custom/Button';
+import { Button } from '@/components/ui/button';
 
 import styles from './home.module.scss';
 
@@ -20,9 +20,7 @@ const HomePage = () => {
 					justifyContent: 'center'
 				}}
 			>
-				<Button variant="contained" onClick={() => router.push('/tests')}>
-					Перейти до тестів
-				</Button>
+				<Button onClick={() => router.push('/tests')}>Перейти до тестів</Button>
 			</Stack>
 		</div>
 	);

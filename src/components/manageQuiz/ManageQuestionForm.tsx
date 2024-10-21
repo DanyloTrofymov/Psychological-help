@@ -1,13 +1,14 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
+import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { FormikErrors, FormikTouched } from 'formik/dist/types';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
+import { Button } from '@/components/ui/button';
 import { QuizRequest } from '@/data/dto/quiz/quiz.request';
 
-import Button from '../custom/Button';
+import { Input } from '../ui/input';
 import AnswerForm from './ManageAnswerForm';
 import styles from './quizForm.module.scss';
 
@@ -33,11 +34,8 @@ const QuestionForm = ({
 		<T = any>(fieldOrEvent: T): T extends string ? (e: any) => void : void;
 	};
 }) => {
-	const [animationClasses, setAnimationClasses] = useState<string[]>([]);
 	const router = useRouter();
-	useEffect(() => {
-		setAnimationClasses(values.questions.map(() => 'entered'));
-	}, [values.questions]);
+	const [removingIndex, setRemovingIndex] = useState<number | null>(null);
 
 	const handleAddQuestion = (index: number) => {
 		const newQuestions = [
@@ -53,16 +51,6 @@ const QuestionForm = ({
 			...values.questions.slice(index + 1)
 		];
 		setFieldValue('questions', newQuestions);
-		setAnimationClasses([
-			...animationClasses.slice(0, index + 1),
-			'entering',
-			...animationClasses.slice(index + 1)
-		]);
-		setTimeout(() => {
-			setAnimationClasses(current =>
-				current.map((cls, idx) => (idx === index + 1 ? 'entered' : cls))
-			);
-		}, 300); // Animation duration
 	};
 
 	const handleCloneQuestion = (index: number) => {
@@ -76,29 +64,17 @@ const QuestionForm = ({
 			...values.questions.slice(index + 1)
 		];
 		setFieldValue('questions', newQuestions);
-		setAnimationClasses([
-			...animationClasses.slice(0, index + 1),
-			'entering',
-			...animationClasses.slice(index + 1)
-		]);
-		setTimeout(() => {
-			setAnimationClasses(current =>
-				current.map((cls, idx) => (idx === index + 1 ? 'entered' : cls))
-			);
-		}, 300); // Animation duration
 	};
 
 	const handleRemoveQuestion = (index: number) => {
-		setAnimationClasses(current =>
-			current.map((cls, idx) => (idx === index ? 'exiting' : cls))
-		);
+		setRemovingIndex(index);
 		setTimeout(() => {
 			setFieldValue(
 				'questions',
 				values.questions.filter((_, i) => i !== index)
 			);
-			setAnimationClasses(current => current.filter((_, i) => i !== index));
-		}, 300); // Ensure this matches your CSS animation duration
+			setRemovingIndex(null);
+		}, 300);
 	};
 
 	return (
@@ -108,12 +84,13 @@ const QuestionForm = ({
 					key={index}
 					direction="column"
 					spacing={2}
-					className={`${styles.animatedItem} ${styles[animationClasses[index]]}`}
+					className={`${styles.animatedItem} ${removingIndex === index ? styles.deletingItem : ''}`}
 					sx={{ p: 2, mt: 1, borderRadius: '4px', backgroundColor: '#f5f5f5' }}
 				>
-					<TextField
+					<Input
 						name={`questions[${index}].title`}
-						label="Заголовок"
+						placeholder="Заголовок"
+						placeholderTransparent
 						required
 						onBlur={handleBlur(`questions[${index}].title`)}
 						onChange={handleChange}
@@ -121,35 +98,23 @@ const QuestionForm = ({
 						error={
 							touched?.questions &&
 							touched?.questions[index]?.title &&
-							Boolean(
-								errors.questions &&
-									((errors.questions[index] as any)?.title as string)
-							)
-						}
-						helperText={
-							touched?.questions &&
-							touched?.questions[index]?.title &&
 							errors.questions &&
 							((errors.questions[index] as any)?.title as string)
 						}
 					/>
-					<TextField
+					<Input
 						name={`questions[${index}].subtitle`}
-						label="Підзаголовок"
+						placeholder="Підзаголовок"
+						placeholderTransparent
 						onChange={handleChange}
 						onBlur={handleBlur(`questions[${index}].subtitle`)}
 						value={values.questions[index].subtitle}
 						error={
 							touched?.questions &&
 							touched?.questions[index] &&
-							Boolean(
-								errors.questions &&
-									((errors.questions[index] as any)?.subtitle as string)
-							)
-						}
-						helperText={
-							errors.questions &&
-							((errors.questions[index] as any)?.subtitle as string as string)
+							errors.questions
+								? ((errors.questions[index] as any)?.subtitle as string)
+								: ''
 						}
 					/>
 					<AnswerForm
@@ -172,7 +137,8 @@ const QuestionForm = ({
 									onClick={() => {
 										handleAddQuestion(index);
 									}}
-									sx={{ m: 2, ml: 3 }}
+									variant={'outline'}
+									className="m-2 ml-3"
 								>
 									Додати запитання
 								</Button>

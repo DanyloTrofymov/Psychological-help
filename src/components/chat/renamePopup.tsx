@@ -1,5 +1,7 @@
-import { ClickAwayListener, Paper, Popper, TextField } from '@mui/material';
+import { ClickAwayListener, Paper, Popper } from '@mui/material';
 import { useState } from 'react';
+
+import { Input } from '../ui/input';
 
 const RenamePopup = ({
 	anchorEl,
@@ -23,8 +25,8 @@ const RenamePopup = ({
 		<Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom-start">
 			<ClickAwayListener onClickAway={handleRename}>
 				<Paper sx={{ p: 1 }}>
-					<TextField
-						label={currentName}
+					<Input
+						placeholder={currentName}
 						onChange={e => setNewName(e.target.value)}
 					/>
 				</Paper>

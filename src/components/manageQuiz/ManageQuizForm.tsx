@@ -1,6 +1,6 @@
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
+import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { FormikErrors, useFormik } from 'formik';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { uploadFileToStorage } from '@/api/media.api';
 import { createQuiz, getQuizById, updateQuiz } from '@/api/quiz.api';
+import { Button } from '@/components/ui/button';
 import { QuizQuestionRequest } from '@/data/dto/quiz/quiz.request';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { MediaResponse } from '@/data/dto/user/userInfo';
@@ -23,9 +24,11 @@ import {
 	UPLOAD_MEDIA
 } from '@/data/messageData';
 import { QuizSchema } from '@/data/validation/quizValidation';
+import { cn } from '@/lib/utils';
 
-import Button from '../custom/Button';
 import UploadMedia from '../mediaUpload/mediaUpload';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
 import QuestionForm from './ManageQuestionForm';
 import styles from './quizForm.module.scss';
 
@@ -180,16 +183,14 @@ const QuizForm = () => {
 			/>
 			<Stack direction="column" spacing={2} sx={{ pb: 2 }}>
 				<Stack direction="row" alignItems={'center'}>
-					<TextField
-						className={styles.field}
+					<Input
+						className={cn('w-full', styles.field)}
 						name="title"
-						label="Назва"
+						placeholder="Назва"
 						onChange={handleChange}
 						onBlur={handleBlur('title')}
-						sx={{ width: '100%' }}
 						value={values.title}
-						error={touched.title && Boolean(errors.title)}
-						helperText={touched.title && errors.title}
+						error={touched.title && errors.title}
 						required
 					/>
 					{mediaUrl ? (
@@ -225,15 +226,14 @@ const QuizForm = () => {
 						</IconButton>
 					)}
 				</Stack>
-				<TextField
+				<Input
 					className={styles.field}
 					name="subtitle"
-					label="Опис"
+					placeholder="Опис"
 					onBlur={handleBlur('subtitle')}
 					onChange={handleChange}
 					value={values.subtitle}
-					error={touched.subtitle && Boolean(errors.subtitle)}
-					helperText={touched.subtitle && errors.subtitle}
+					error={touched.subtitle && errors.subtitle}
 				/>
 
 				<QuestionForm
@@ -245,17 +245,15 @@ const QuizForm = () => {
 					errors={errors}
 				/>
 				<Typography>Максимум балів: {totalScore}</Typography>
-				<TextField
-					className={styles.field}
+				<Textarea
+					className="resize-none"
 					name="summary"
-					label="Опис результатів"
+					placeholder="Опис результатів"
 					required
-					multiline
 					onChange={handleChange}
 					onBlur={handleBlur('summary')}
 					value={values.summary}
-					error={touched.summary && Boolean(errors.summary)}
-					helperText={touched.summary ? errors.summary : ''}
+					error={touched.summary ? errors.summary : ''}
 				/>
 			</Stack>
 
@@ -270,7 +268,8 @@ const QuizForm = () => {
 						setValues(quizInitial);
 					}}
 					disabled={!!quizId}
-					sx={{ m: 2, ml: 3 }}
+					variant={'secondary'}
+					className="m-2 ml-3"
 				>
 					Додати питання
 				</Button>
@@ -279,7 +278,7 @@ const QuizForm = () => {
 					{'Необхідно додати ще питання'}
 				</Typography>
 			) : (
-				<Button variant="contained" onClick={() => submitForm()}>
+				<Button onClick={() => submitForm()}>
 					{quizId ? 'Оновити' : 'Створити'}
 				</Button>
 			)}

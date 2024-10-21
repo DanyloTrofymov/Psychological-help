@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { getQuizzes } from '@/api/quiz.api';
-import Button from '@/components/custom/Button';
+import { Button } from '@/components/ui/button';
 import useUser from '@/context/useUser';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { ROLE } from '@/data/dto/user/userInfo';
@@ -34,7 +34,7 @@ const QuizLayout = () => {
 		if (fetchQuizzes) {
 			fetchQuizzes();
 		}
-	}, [currentPage, fetchQuizzes]);
+	}, [currentPage]);
 
 	return (
 		<div>
@@ -52,9 +52,8 @@ const QuizLayout = () => {
 				<div>
 					{user?.role.key === ROLE.ADMIN && (
 						<Button
-							variant="contained"
 							onClick={() => router.push('/tests/manage')}
-							sx={{ mb: 2 }}
+							className="mb-2"
 						>
 							Створити тест
 						</Button>

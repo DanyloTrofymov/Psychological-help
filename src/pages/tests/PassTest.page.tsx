@@ -14,8 +14,8 @@ import { useEffect, useState } from 'react';
 
 import { getQuizById } from '@/api/quiz.api';
 import { createTake } from '@/api/take.api';
-import Button from '@/components/custom/Button';
 import CenteredLoader from '@/components/custom/CenteredLoader';
+import { Button } from '@/components/ui/button';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { takeInitial } from '@/data/initialValues/quizInitial';
 import { MESSAGE_TYPE, SOMETHING_WENT_WRONG } from '@/data/messageData';
@@ -152,9 +152,7 @@ const PassTestForm = () => {
 					{'Заповність усі необхідні поля'}
 				</Typography>
 			)}
-			<Button variant="contained" onClick={() => submitForm()}>
-				Завершити
-			</Button>
+			<Button onClick={() => submitForm()}>Завершити</Button>
 		</Box>
 	);
 };

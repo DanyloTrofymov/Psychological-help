@@ -14,9 +14,9 @@ import { useSnackbar } from 'notistack';
 import { useCallback, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
+import { Button } from '@/components/ui/button';
 import { MESSAGE_TYPE } from '@/data/messageData';
 
-import Button from '../custom/Button';
 import { mediaUpload } from './mediaUpload.interface';
 
 export default function UploadMedia({
@@ -218,16 +218,9 @@ export default function UploadMedia({
 									}}
 								>
 									<Button
-										variant="text"
 										onClick={() => handleZoom(false)}
 										disabled={zoom == 1}
-										sx={{
-											fontSize: 25,
-											padding: 0,
-											borderRadius: 50,
-											minWidth: '40px',
-											minHeight: '40px'
-										}}
+										className="p-0 rounded-full w-10"
 									>
 										<ZoomOutIcon />
 									</Button>
@@ -241,16 +234,9 @@ export default function UploadMedia({
 										sx={{ width: '50%', m: '5px' }}
 									/>
 									<Button
-										variant="text"
 										onClick={() => handleZoom(true)}
 										disabled={zoom == 3}
-										sx={{
-											fontSize: 25,
-											padding: 0,
-											borderRadius: 50,
-											minWidth: '40px',
-											minHeight: '40px'
-										}}
+										className="p-0 rounded-full w-10"
 									>
 										<ZoomInIcon />
 									</Button>
@@ -267,17 +253,13 @@ export default function UploadMedia({
 									<Button
 										disabled={fileURL == undefined}
 										onClick={() => handleClose()}
-										variant="text"
 									>
 										Cancel
 									</Button>
 									<Button
 										disabled={fileURL == undefined}
 										onClick={() => saveImage()}
-										variant="contained"
-										sx={{
-											ml: 'auto'
-										}}
+										className="ml-auto"
 									>
 										Save
 									</Button>

@@ -4,7 +4,7 @@ import { NextRouter } from 'next/router';
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
-import Button from '@/components/custom/Button';
+import { Button } from '@/components/ui/button';
 import { HOST_ADDRESS } from '@/data/apiConstants';
 import { MESSAGE_TYPE } from '@/data/messageData';
 
@@ -147,22 +147,13 @@ class ErrorBoundaryClass extends Component<Props, State> {
 								</Typography>
 							</Box>
 						)}
-						<Box>
+						<Box className="gap-3">
 							{this.state.errorStack && (
-								<Button
-									onClick={() => this.handleAction()}
-									sx={{ mr: 3, width: '190px' }}
-								>
+								<Button onClick={() => this.handleAction()}>
 									{this.state.showMore ? 'Copy info' : 'Show more info'}
 								</Button>
 							)}
-							<Button
-								variant="contained"
-								onClick={() => this.handleTryAgain()}
-								sx={{ width: ' 190px' }}
-							>
-								Reload page
-							</Button>
+							<Button onClick={() => this.handleTryAgain()}>Reload page</Button>
 						</Box>
 					</Stack>
 				</Stack>

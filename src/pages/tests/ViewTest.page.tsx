@@ -13,9 +13,9 @@ import { useEffect, useState } from 'react';
 import { sentTakeToAI, sentTakeToTherapist } from '@/api/chatroom.api';
 import { getQuizById } from '@/api/quiz.api';
 import { getTakeById } from '@/api/take.api';
-import Button from '@/components/custom/Button';
 import CenteredLoader from '@/components/custom/CenteredLoader';
 import SendToChatModal from '@/components/sendToChatModal/sendToChatModal';
+import { Button } from '@/components/ui/button';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { TakeResponse } from '@/data/dto/take/take.response';
 import { MESSAGE_TYPE, SOMETHING_WENT_WRONG } from '@/data/messageData';
@@ -170,10 +170,8 @@ const ViewTestForm = () => {
 				<Typography variant="h3">{quiz?.summary}</Typography>
 			</Stack>
 			<Stack direction={'row'} justifyContent={'space-between'}>
-				<Button variant="contained" onClick={() => router.push('/tests')}>
-					Назад
-				</Button>
-				<Button variant="contained" onClick={() => setOpenModal(true)}>
+				<Button onClick={() => router.push('/tests')}>Назад</Button>
+				<Button onClick={() => setOpenModal(true)}>
 					Надіслати результат у чат
 				</Button>
 			</Stack>

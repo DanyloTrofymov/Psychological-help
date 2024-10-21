@@ -29,7 +29,9 @@
   "ignorePatterns": [
     ".next",
     "out",
-    "next.config.js"
+    "next.config.js",
+    "tailwind.config.js",
+    "postcss.config.js"
   ],
   "rules": {
     "@next/next/no-img-element": "off",

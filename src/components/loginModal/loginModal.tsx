@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
 
-import Button from '../custom/Button';
+import { Button } from '@/components/ui/button';
 
 const LoginModal = ({
 	open,
@@ -16,9 +16,7 @@ const LoginModal = ({
 			</Typography>
 		</DialogTitle>
 		<DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
-			<Button variant="contained" onClick={onClose}>
-				Ок
-			</Button>
+			<Button onClick={onClose}>Ок</Button>
 		</DialogContent>
 	</Dialog>
 );
