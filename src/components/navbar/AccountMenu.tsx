@@ -1,4 +1,9 @@
-import { Grid3X3Icon, LogOutIcon, MessageCircleIcon } from 'lucide-react';
+import {
+	Grid3X3Icon,
+	LogOutIcon,
+	MessageCircleIcon,
+	PhoneCallIcon
+} from 'lucide-react';
 import { useRouter } from 'next/router';
 
 import useUser from '@/context/useUser';
@@ -41,6 +46,15 @@ const AccountMenu = ({
 				>
 					<MessageCircleIcon />
 					<p className="text-wrap">Чати</p>
+				</DropdownMenuItem>
+				<DropdownMenuItem
+					className={styles.listItem}
+					onClick={() => router.push('/contacts')}
+				>
+					<PhoneCallIcon />
+					<p className="text-wrap">
+						Контакти безкоштовної психологічної допомоги{' '}
+					</p>
 				</DropdownMenuItem>
 				<DropdownMenuItem
 					className={styles.listItem}
