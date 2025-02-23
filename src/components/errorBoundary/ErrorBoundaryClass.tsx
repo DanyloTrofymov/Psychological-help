@@ -1,4 +1,3 @@
-import { Box, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import { NextRouter } from 'next/router';
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
@@ -88,75 +87,40 @@ class ErrorBoundaryClass extends Component<Props, State> {
 	public render() {
 		if (this.state.errorMessage.length) {
 			return (
-				<Stack
-					direction="row"
-					sx={{
-						height: 'calc(100% - 64px)',
-						justifyContent: 'center'
-					}}
-				>
-					<Stack
-						sx={{
-							justifyContent: 'center',
-							alignItems: 'center',
-							gap: 3
-						}}
-					>
-						<Image src={'/logo-black.svg'} alt="logo" />
-						<Typography>Oops, there is an error!</Typography>
-						<Typography
-							variant="h1"
-							sx={{
-								color: theme =>
-									theme.palette.mode == 'dark' ? '#eees' : 'var(--grey)',
-								maxWidth: '1000px',
-								overflow: 'hidden',
-								textOverflow: 'ellipsis',
-								whiteSpace: 'nowrap'
-							}}
-						>
+				<div className="flex flex-row h-[calc(100vh-64px)] justify-center">
+					<div className="flex flex-col justify-center gap-3 items-center">
+						<Image
+							src={'/logo-black.svg'}
+							alt="logo"
+							width={100}
+							height={100}
+						/>
+						<p>Oops, there is an error!</p>
+						<p className="text-2xl text-center text-gray-500 max-w-[1000px] overflow-hidden text-ellipsis whitespace-nowrap">
 							{this.state.errorMessage}
-						</Typography>
+						</p>
 						{this.state.showMore && (
-							<Box
-								sx={{
-									border: '1px solid ',
-									borderColor: '#87CEFA',
-									backgroundColor: '#87CEFA55',
-									borderRadius: '5px',
-									width: '80vw',
-									maxWidth: '1200px',
-									minWidth: '500px',
-									maxHeight: 'calc(100% - 370px)',
-									overflowY: 'auto',
-									p: 2
-								}}
-							>
-								<Typography
-									variant="body1"
-									sx={{
-										color: '#eee'
-									}}
-								>
+							<div className="border border-blue-500 bg-blue-500/50 border-radius-5px w-[80vw] max-w-[1200px] min-w-[500px] max-h-[calc(100%_-_370px)] overflow-y-auto p-2">
+								<p className="text-gray-700">
 									<span>Path: {HOST_ADDRESS + this.props.router.asPath}</span>
 									<br />
 									<span>Route: {this.props.router.pathname}</span>
 									<br />
 									<br />
 									<span>{this.state.errorStack}</span>
-								</Typography>
-							</Box>
+								</p>
+							</div>
 						)}
-						<Box className="gap-3">
+						<div className="flex flex-row gap-3">
 							{this.state.errorStack && (
 								<Button onClick={() => this.handleAction()}>
 									{this.state.showMore ? 'Copy info' : 'Show more info'}
 								</Button>
 							)}
 							<Button onClick={() => this.handleTryAgain()}>Reload page</Button>
-						</Box>
-					</Stack>
-				</Stack>
+						</div>
+					</div>
+				</div>
 			);
 		}
 

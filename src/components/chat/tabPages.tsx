@@ -1,9 +1,10 @@
 // components/TabPages.tsx
-import { Tab, Tabs } from '@mui/material';
 import { useRouter } from 'next/router';
 
 import useUser from '@/context/useUser';
 import { ROLE } from '@/data/dto/user/userInfo';
+
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 
 interface TabPagesProps {
 	selectedTab: number;
@@ -14,14 +15,15 @@ function a11yProps(index: number) {
 	return {
 		id: `simple-tab-${index}`,
 		'aria-controls': `simple-tabpanel-${index}`,
-		value: index
+		value: index.toString()
 	};
 }
 
 const TabPages = ({ selectedTab, setSelectedTab }: TabPagesProps) => {
 	const router = useRouter();
 	const { user } = useUser();
-	const handleChange = (e: React.SyntheticEvent, newValue: number) => {
+	const handleChange = (value: string) => {
+		const newValue = parseInt(value);
 		setSelectedTab(newValue);
 		if (router.isReady) {
 			let newRoute = '';
@@ -51,28 +53,42 @@ const TabPages = ({ selectedTab, setSelectedTab }: TabPagesProps) => {
 
 	return (
 		<Tabs
-			value={selectedTab}
-			onChange={handleChange}
+			value={selectedTab.toString()}
+			onValueChange={handleChange}
 			aria-label="chatroom tabs"
 		>
-			{user?.role.key === ROLE.USER && (
-				<Tab label="ШІ асистенти" {...a11yProps(0)} sx={{ flex: 1 }} />
-			)}
-			{user?.role.key === ROLE.USER && (
-				<Tab label="Терапевт" {...a11yProps(1)} sx={{ flex: 1 }} />
-			)}
-			{user?.role.key === ROLE.THERAPIST && (
-				<Tab label="Клієнти" {...a11yProps(2)} sx={{ flex: 1 }} />
-			)}
-			{user?.role.key === ROLE.THERAPIST && (
-				<Tab label="Запити" {...a11yProps(3)} sx={{ flex: 1 }} />
-			)}
-			{user?.role.key === ROLE.ADMIN && (
-				<Tab label="Мої чати" {...a11yProps(4)} sx={{ flex: 1 }} />
-			)}
-			{user?.role.key === ROLE.ADMIN && (
-				<Tab label="Всі чати" {...a11yProps(5)} sx={{ flex: 1 }} />
-			)}
+			<TabsList className="grid w-full grid-cols-2">
+				{user?.role.key === ROLE.USER && (
+					<TabsTrigger {...a11yProps(0)} className="flex-1">
+						ШІ асистенти
+					</TabsTrigger>
+				)}
+				{user?.role.key === ROLE.USER && (
+					<TabsTrigger {...a11yProps(1)} className="flex-1">
+						Терапевт
+					</TabsTrigger>
+				)}
+				{user?.role.key === ROLE.THERAPIST && (
+					<TabsTrigger {...a11yProps(2)} className="flex-1">
+						Клієнти
+					</TabsTrigger>
+				)}
+				{user?.role.key === ROLE.THERAPIST && (
+					<TabsTrigger {...a11yProps(3)} className="flex-1">
+						Запити
+					</TabsTrigger>
+				)}
+				{user?.role.key === ROLE.ADMIN && (
+					<TabsTrigger {...a11yProps(4)} className="flex-1">
+						Мої чати
+					</TabsTrigger>
+				)}
+				{user?.role.key === ROLE.ADMIN && (
+					<TabsTrigger {...a11yProps(5)} className="flex-1">
+						Всі чати
+					</TabsTrigger>
+				)}
+			</TabsList>
 		</Tabs>
 	);
 };

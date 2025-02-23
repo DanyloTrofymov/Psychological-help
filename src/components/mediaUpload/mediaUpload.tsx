@@ -1,22 +1,15 @@
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
-import {
-	Box,
-	CircularProgress,
-	Dialog,
-	Divider,
-	Slider,
-	Stack,
-	Typography
-} from '@mui/material';
+import { FileUpIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
 import { useSnackbar } from 'notistack';
 import { useCallback, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
 import { Button } from '@/components/ui/button';
 import { MESSAGE_TYPE } from '@/data/messageData';
+import { cn } from '@/lib/utils';
 
+import CenteredLoader from '../custom/CenteredLoader';
+import { Dialog, DialogContent } from '../ui/dialog';
+import { Slider } from '../ui/slider';
 import { mediaUpload } from './mediaUpload.interface';
 
 export default function UploadMedia({
@@ -159,175 +152,142 @@ export default function UploadMedia({
 
 	return (
 		<Dialog
-			maxWidth="md"
-			scroll="body"
 			open={isOpen}
-			onClose={() => {
-				!loader && handleClose();
+			onOpenChange={open => {
+				!loader && !open && handleClose();
 			}}
 		>
-			<Stack direction="column" sx={{ alignItems: 'center' }}>
-				{loader ? (
-					<Box
-						sx={{
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-							width: '70px',
-							height: '70px'
-						}}
-					>
-						<CircularProgress />
-					</Box>
-				) : (
-					<Box>
-						{file ? (
-							<Stack
-								direction="column"
-								sx={{ alignItems: 'center', width: '600px', height: '620px' }}
-							>
-								<Cropper
-									style={{
-										containerStyle: {
-											minWidth: '600px',
-											minHeight: '480px',
-											marginBottom: '10px',
-											position: 'relative'
-										}
-									}}
-									image={fileURL}
-									crop={crop}
-									zoom={zoom}
-									onCropChange={setCrop}
-									onZoomChange={setZoom}
-									zoomSpeed={0.1}
-									aspect={1}
-									showGrid={false}
-									cropShape="rect"
-									onCropComplete={(croppedArea, croppedAreaPixels) =>
-										setCroppedAreaPixels(croppedAreaPixels)
-									}
-								/>
-								<Stack
-									direction="row"
-									sx={{
-										width: 500,
-										justifyContent: 'center',
-										alignItems: 'center',
-										mb: '5px'
-									}}
-								>
-									<Button
-										onClick={() => handleZoom(false)}
-										disabled={zoom == 1}
-										className="p-0 rounded-full w-10"
-									>
-										<ZoomOutIcon />
-									</Button>
-									<Slider
-										value={zoom}
-										min={1}
-										max={3}
-										step={0.05}
-										aria-labelledby="Zoom"
-										onChange={(e, zoom) => setZoom(Number(zoom))}
-										sx={{ width: '50%', m: '5px' }}
-									/>
-									<Button
-										onClick={() => handleZoom(true)}
-										disabled={zoom == 3}
-										className="p-0 rounded-full w-10"
-									>
-										<ZoomInIcon />
-									</Button>
-								</Stack>
-								<Divider sx={{ width: 600, mb: '15px' }} />
-								<Stack
-									direction="row"
-									sx={{
-										width: 500,
-										alignItems: 'center',
-										justifyContent: 'center'
-									}}
-								>
-									<Button
-										disabled={fileURL == undefined}
-										onClick={() => handleClose()}
-									>
-										Cancel
-									</Button>
-									<Button
-										disabled={fileURL == undefined}
-										onClick={() => saveImage()}
-										className="ml-auto"
-									>
-										Save
-									</Button>
-								</Stack>
-							</Stack>
-						) : (
-							<Box
-								sx={{
-									width: '400px',
-									height: '200px',
-									margin: '30px',
-									borderStyle: 'dashed',
-									borderColor: isDragOver ? 'primary' : 'text.secondary',
-									alignItems: 'center',
-									display: 'flex',
-									justifyContent: 'center',
-									cursor: 'pointer',
-									backgroundColor: isDragOver ? '#646482' : ''
-								}}
-								onClick={() => fileInputRef.current?.click()}
-								{...getRootProps()}
-							>
-								<input
-									hidden
-									accept="image/*"
-									type="file"
-									ref={fileInputRef}
-									onChange={onInputFile}
-								/>
-								<Stack {...getRootProps()}>
-									<Box
-										sx={{
-											alignItems: 'center',
-											display: 'flex',
-											justifyContent: 'center'
+			<DialogContent className="p-2 max-w-[620px] w-min">
+				<div className="flex flex-col gap-2 items-center">
+					{loader ? (
+						<CenteredLoader />
+					) : (
+						<div>
+							{file ? (
+								<div className="flex flex-col gap-2 items-center w-[600px] h-[620px]">
+									<Cropper
+										style={{
+											containerStyle: {
+												minWidth: '600px',
+												minHeight: '480px',
+												marginBottom: '10px',
+												position: 'relative'
+											}
 										}}
+										image={fileURL}
+										crop={crop}
+										zoom={zoom}
+										onCropChange={setCrop}
+										onZoomChange={setZoom}
+										zoomSpeed={0.1}
+										aspect={1}
+										showGrid={false}
+										cropShape="rect"
+										onCropComplete={(croppedArea, croppedAreaPixels) =>
+											setCroppedAreaPixels(croppedAreaPixels)
+										}
+									/>
+									<div className="flex flex-row gap-2 items-center w-[500px] justify-center mb-5">
+										<Button
+											onClick={() => handleZoom(false)}
+											disabled={zoom == 1}
+											className="p-0 rounded-full w-10"
+											variant="ghost"
+										>
+											<ZoomOutIcon />
+										</Button>
+										<Slider
+											value={[zoom]}
+											defaultValue={[zoom]}
+											min={1}
+											max={3}
+											step={0.05}
+											aria-labelledby="Zoom"
+											onValueChange={val => setZoom(val[0])}
+										/>
+										<Button
+											onClick={() => handleZoom(true)}
+											disabled={zoom == 3}
+											className="p-0 rounded-full w-10"
+											variant="ghost"
+										>
+											<ZoomInIcon />
+										</Button>
+									</div>
+									<div className="w-[600px] border-b" />
+									<div className="flex flex-row gap-2 items-center w-[500px] justify-center mb-5">
+										<Button
+											disabled={fileURL == undefined}
+											onClick={() => handleClose()}
+										>
+											Cancel
+										</Button>
+										<Button
+											disabled={fileURL == undefined}
+											onClick={() => saveImage()}
+											className="ml-auto"
+										>
+											Save
+										</Button>
+									</div>
+								</div>
+							) : (
+								<div
+									className={cn(
+										'border-dashed border-4 border-gray-300 rounded-md w-[400px] h-[200px] m-5 flex items-center justify-center cursor-pointer bg-gray-100',
+										isDragOver && 'bg-gray-200'
+									)}
+									onClick={() => fileInputRef.current?.click()}
+									{...getRootProps()}
+								>
+									<input
+										hidden
+										accept="image/*"
+										type="file"
+										ref={fileInputRef}
+										onChange={onInputFile}
+									/>
+									<div
+										className="flex flex-col items-center justify-center"
 										{...getRootProps()}
 									>
-										<Typography
-											sx={{ mr: '10px', cursor: 'pointer' }}
-											component="label"
-											variant="h2"
-											color={isDragOver ? 'primary' : 'text.secondary'}
+										<div
+											className="flex flex-row items-center justify-center"
+											{...getRootProps()}
 										>
-											Upload image
-										</Typography>
-										<UploadFileIcon
-											sx={{
-												height: '2rem',
-												width: '2rem',
-												color: isDragOver ? 'primary' : 'text.secondary',
-												cursor: 'pointer'
-											}}
-										/>
-									</Box>
-									<Typography
-										sx={{ mr: '10px', cursor: 'pointer' }}
-										color={isDragOver ? 'primary' : 'text.secondary'}
-										variant="h3"
-									>
-										Drag photo here or click to browse
-									</Typography>
-								</Stack>
-							</Box>
-						)}
-					</Box>
-				)}
-			</Stack>
+											<p
+												className={cn(
+													'mr-2 cursor-pointer text-lg',
+													{ 'text-gray-300': isDragOver },
+													{ 'text-gray-500': !isDragOver }
+												)}
+											>
+												Upload image
+											</p>
+											<FileUpIcon
+												className={cn(
+													'h-6 w-6 cursor-pointer',
+													{ 'text-gray-300': isDragOver },
+													{ 'text-gray-500': !isDragOver }
+												)}
+											/>
+										</div>
+										<p
+											className={cn(
+												'cursor-pointer',
+												{ 'text-gray-300': isDragOver },
+												{ 'text-gray-500': !isDragOver }
+											)}
+										>
+											Drag photo here or click to browse
+										</p>
+									</div>
+								</div>
+							)}
+						</div>
+					)}
+				</div>
+			</DialogContent>
 		</Dialog>
 	);
 }

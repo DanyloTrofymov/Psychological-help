@@ -1,12 +1,11 @@
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { FormikErrors, FormikTouched } from 'formik/dist/types';
+import { CopyIcon, Trash2Icon } from 'lucide-react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { QuizRequest } from '@/data/dto/quiz/quiz.request';
+import { cn } from '@/lib/utils';
 
 import { Input } from '../ui/input';
 import AnswerForm from './ManageAnswerForm';
@@ -37,55 +36,65 @@ const QuestionForm = ({
 	const router = useRouter();
 	const [removingIndex, setRemovingIndex] = useState<number | null>(null);
 
-	const handleAddQuestion = (index: number) => {
-		const newQuestions = [
-			...values.questions.slice(0, index + 1),
-			{
-				title: '',
-				subtitle: '',
-				answers: [
-					{ title: '', score: 0, mediaId: undefined },
-					{ title: '', score: 0, mediaId: undefined }
-				]
-			},
-			...values.questions.slice(index + 1)
-		];
-		setFieldValue('questions', newQuestions);
-	};
+	const handleAddQuestion = useCallback(
+		(index: number) => {
+			const newQuestions = [
+				...values.questions.slice(0, index + 1),
+				{
+					title: '',
+					subtitle: '',
+					answers: [
+						{ title: '', score: 0, mediaId: undefined },
+						{ title: '', score: 0, mediaId: undefined }
+					]
+				},
+				...values.questions.slice(index + 1)
+			];
+			setFieldValue('questions', newQuestions);
+		},
+		[values.questions, setFieldValue]
+	);
 
-	const handleCloneQuestion = (index: number) => {
-		const newQuestions = [
-			...values.questions.slice(0, index + 1),
-			{
-				title: values.questions[index].title,
-				subtitle: values.questions[index].subtitle,
-				answers: values.questions[index].answers
-			},
-			...values.questions.slice(index + 1)
-		];
-		setFieldValue('questions', newQuestions);
-	};
+	const handleCloneQuestion = useCallback(
+		(index: number) => {
+			const newQuestions = [
+				...values.questions.slice(0, index + 1),
+				{
+					title: values.questions[index].title,
+					subtitle: values.questions[index].subtitle,
+					answers: values.questions[index].answers
+				},
+				...values.questions.slice(index + 1)
+			];
+			setFieldValue('questions', newQuestions);
+		},
+		[values.questions, setFieldValue]
+	);
 
-	const handleRemoveQuestion = (index: number) => {
-		setRemovingIndex(index);
-		setTimeout(() => {
-			setFieldValue(
-				'questions',
-				values.questions.filter((_, i) => i !== index)
-			);
-			setRemovingIndex(null);
-		}, 300);
-	};
+	const handleRemoveQuestion = useCallback(
+		(index: number) => {
+			setRemovingIndex(index);
+			setTimeout(() => {
+				setFieldValue(
+					'questions',
+					values.questions.filter((_, i) => i !== index)
+				);
+				setRemovingIndex(null);
+			}, 300);
+		},
+		[values.questions, setFieldValue]
+	);
 
 	return (
-		<>
+		<div className="flex flex-col gap-4">
 			{values.questions.map((question, index) => (
-				<Stack
+				<div
 					key={index}
-					direction="column"
-					spacing={2}
-					className={`${styles.animatedItem} ${removingIndex === index ? styles.deletingItem : ''}`}
-					sx={{ p: 2, mt: 1, borderRadius: '4px', backgroundColor: '#f5f5f5' }}
+					className={cn(
+						styles.animatedItem,
+						removingIndex === index ? styles.deletingItem : '',
+						'flex flex-col p-2 mt-1 rounded-md bg-gray-100 gap-4'
+					)}
 				>
 					<Input
 						name={`questions[${index}].title`}
@@ -126,54 +135,48 @@ const QuestionForm = ({
 						touched={touched}
 						errors={errors}
 					/>
-					<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14, pl: 3 }}>
-						{values.questions[index].answers.length < 2 &&
-							'Додайте мінімум 2 запитання'}
-					</Typography>
-					<Stack direction="row" spacing={2} justifyContent={'space-between'}>
+					{values.questions[index].answers.length < 2 && (
+						<p className="text-red-500 text-sm pl-3">
+							Додайте мінімум 2 запитання
+						</p>
+					)}
+					<div className="flex justify-between gap-2">
 						{!router.query.id && (
 							<>
 								<Button
 									onClick={() => {
 										handleAddQuestion(index);
 									}}
-									variant={'outline'}
-									className="m-2 ml-3"
+									className="m-2"
 								>
 									Додати запитання
 								</Button>
-								<Box>
-									<IconButton
-										sx={{
-											mr: 2,
-											height: '35px',
-											width: '35px'
-										}}
+								<div className="flex gap-2">
+									<Button
+										variant="ghost"
+										size="icon"
 										onClick={() => {
 											handleCloneQuestion(index);
 										}}
 									>
-										<ContentCopyIcon />
-									</IconButton>
-									<IconButton
-										sx={{
-											mr: 2,
-											height: '35px',
-											width: '35px'
-										}}
+										<CopyIcon />
+									</Button>
+									<Button
+										variant="ghost"
+										size="icon"
 										onClick={() => {
 											handleRemoveQuestion(index);
 										}}
 									>
-										<DeleteOutlineIcon />
-									</IconButton>
-								</Box>
+										<Trash2Icon />
+									</Button>
+								</div>
 							</>
 						)}
-					</Stack>
-				</Stack>
+					</div>
+				</div>
 			))}
-		</>
+		</div>
 	);
 };
 

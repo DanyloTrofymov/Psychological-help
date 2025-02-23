@@ -1,10 +1,10 @@
-import CircularProgress from '@mui/material/CircularProgress';
+import { LoaderCircleIcon } from 'lucide-react';
 
 import CenteredContainer from './CenteredContainer';
 
 const CenteredLoader = () => (
 	<CenteredContainer>
-		<CircularProgress />
+		<LoaderCircleIcon className="w-10 h-10 animate-spin" />
 	</CenteredContainer>
 );
 

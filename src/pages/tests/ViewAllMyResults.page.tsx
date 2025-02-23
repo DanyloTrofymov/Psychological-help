@@ -1,6 +1,4 @@
-import { Typography } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { getMyTake } from '@/api/take.api';
@@ -11,7 +9,7 @@ const QuizLayout = () => {
 	const [takes, setTakes] = useState<TakeResponse[]>([]);
 	const [currentPage, setCurrentPage] = useState(0);
 
-	const fetchTakes = async () => {
+	const fetchTakes = useCallback(async () => {
 		try {
 			const response = await getMyTake(currentPage, 10);
 			if (response && response.status === 200) {
@@ -20,21 +18,17 @@ const QuizLayout = () => {
 		} catch (error) {
 			console.error(error);
 		}
-	};
+	}, [currentPage]);
 
 	useEffect(() => {
 		fetchTakes();
-	}, [currentPage]);
+	}, [fetchTakes]);
 
 	return (
 		<div>
-			<Typography
-				variant="h1"
-				sx={{ justifySelf: 'center', fontSize: 30, color: '#213529', pb: 2 }}
-			>
-				{' '}
-				Мої результати{' '}
-			</Typography>
+			<p className="text-2xl text-center text-gray-800 pb-2 font-semibold">
+				Мої результати
+			</p>
 			<InfiniteScroll
 				dataLength={takes.length}
 				next={() => setCurrentPage(currentPage + 1)}
@@ -42,13 +36,11 @@ const QuizLayout = () => {
 				loader={null}
 				scrollableTarget="scrollableLayout"
 			>
-				<Grid container spacing={2} sx={{ mb: 1 }}>
+				<div className="grid grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-4 mb-1">
 					{takes.map(take => (
-						<Grid item key={take.id} xs={12} sm={6} md={4} lg={3}>
-							<TakeCard take={take} />
-						</Grid>
+						<TakeCard key={take.id} take={take} />
 					))}
-				</Grid>
+				</div>
 			</InfiniteScroll>
 		</div>
 	);

@@ -1,8 +1,6 @@
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { LoaderCircle } from 'lucide-react';
 import * as React from 'react';
-import { MouseEvent } from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -11,8 +9,7 @@ const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default:
-					'bg-[var(--primary-color)] text-primary-foreground hover:bg-primary/90',
+				default: 'bg-primary text-primary-foreground hover:bg-primary/90',
 				destructive:
 					'bg-destructive text-destructive-foreground hover:bg-destructive/90',
 				outline:
@@ -42,38 +39,15 @@ export interface ButtonProps
 	asChild?: boolean;
 }
 
-const Button = React.forwardRef<
-	HTMLButtonElement,
-	ButtonProps & { loading?: boolean }
->(
-	(
-		{ className, variant, size, asChild = false, loading = false, ...props },
-		ref
-	) => {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+	({ className, variant, size, asChild = false, ...props }, ref) => {
 		const Comp = asChild ? Slot : 'button';
-		const handleClick = (
-			e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
-		) => {
-			if (loading) return;
-			props.onClick && props.onClick(e);
-		};
-
 		return (
 			<Comp
 				className={cn(buttonVariants({ variant, size, className }))}
 				ref={ref}
 				{...props}
-				onClick={handleClick}
-			>
-				{' '}
-				{loading ? (
-					<LoaderCircle
-						className={`${(variant === 'default' || !variant) && 'grey'}`}
-					/>
-				) : (
-					props.children
-				)}
-			</Comp>
+			/>
 		);
 	}
 );

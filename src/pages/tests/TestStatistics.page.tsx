@@ -1,4 +1,4 @@
-import { Paper, Stack, Typography } from '@mui/material';
+import { Paper } from '@mui/material';
 import { BarChart, LineChart } from '@mui/x-charts';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -23,10 +23,11 @@ const QuizStatistic = () => {
 		if (router.query.id) {
 			fetch();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [router.query.id]);
 
 	return (
-		<Stack>
+		<div className="flex flex-col">
 			{data && (
 				<Paper
 					sx={{
@@ -38,10 +39,8 @@ const QuizStatistic = () => {
 						flexDirection: 'column'
 					}}
 				>
-					<Typography variant="h1" sx={{ alignSelf: 'center' }}>
-						Статистика тесту {data.quizTitle}
-					</Typography>
-					<Typography variant="h2">Лінійний графік графік</Typography>
+					<h1 className="self-center">Статистика тесту {data.quizTitle}</h1>
+					<h2>Лінійний графік графік</h2>
 					{data.scoreBins.length > 2 ? (
 						<LineChart
 							dataset={data.answerCounts}
@@ -60,14 +59,12 @@ const QuizStatistic = () => {
 							height={300}
 						/>
 					) : (
-						<Typography>
-							Недостаньо даних для побудови лінійного графіку
-						</Typography>
+						<p>Недостаньо даних для побудови лінійного графіку</p>
 					)}
-					<Typography variant="h2">Гістограма відповідей</Typography>
+					<h2>Гістограма відповідей</h2>
 					{data.answerCounts.map((item: any) => (
 						<>
-							<Typography variant="h3">{item.questionTitle}</Typography>
+							<h3>{item.questionTitle}</h3>
 							<BarChart
 								xAxis={[{ scaleType: 'band', data: [item.questionTitle] }]}
 								series={item.counts?.map((count: any) => {
@@ -80,7 +77,7 @@ const QuizStatistic = () => {
 					))}
 				</Paper>
 			)}
-		</Stack>
+		</div>
 	);
 };
 

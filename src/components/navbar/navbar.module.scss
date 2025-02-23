@@ -22,18 +22,3 @@
   width: 70px;
   height: 70px;
 }
-
-.listItem {
-  margin: 0 10px;
-  width: 180px;
-  border-radius: 5px;
-  cursor: pointer;
-
-  & p {
-    margin: 0 10px;
-  }
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-}

@@ -1,4 +1,3 @@
-import { CircularProgress, Stack } from '@mui/material';
 import { useRouter } from 'next/router';
 import {
 	createContext,
@@ -12,6 +11,7 @@ import {
 } from 'react';
 import { io, Socket } from 'socket.io-client';
 
+import CenteredLoader from '@/components/custom/CenteredLoader';
 import { Navbar } from '@/components/navbar/Navbar';
 import { HOST_ADDRESS } from '@/data/apiConstants';
 import { AuthResponse } from '@/data/dto/auth/auth.response';
@@ -41,23 +41,6 @@ export const UserContextProvider: FC<Properties> = ({ children }) => {
 	const [socket, setSocket] = useState<Socket | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const router = useRouter();
-	const setJwtTokens = (jwtData: AuthResponse) => {
-		if (jwtData) {
-			localStorage.setItem(ACCESS_TOKEN, jwtData.accessToken);
-			localStorage.setItem(REFRESH_TOKEN, jwtData.refreshToken);
-			getUserData();
-		} else {
-			localStorage.removeItem(ACCESS_TOKEN);
-			localStorage.removeItem(REFRESH_TOKEN);
-		}
-	};
-
-	const logout = () => {
-		localStorage.removeItem(ACCESS_TOKEN);
-		localStorage.removeItem(REFRESH_TOKEN);
-		router.push('/');
-		setUserData(null);
-	};
 
 	const getUserData = useCallback(async () => {
 		const response: any = await getUser();
@@ -67,6 +50,27 @@ export const UserContextProvider: FC<Properties> = ({ children }) => {
 		setIsLoading(false);
 		return (response?.data as UserResponse) || null;
 	}, []);
+
+	const setJwtTokens = useCallback(
+		(jwtData: AuthResponse) => {
+			if (jwtData) {
+				localStorage.setItem(ACCESS_TOKEN, jwtData.accessToken);
+				localStorage.setItem(REFRESH_TOKEN, jwtData.refreshToken);
+				getUserData();
+			} else {
+				localStorage.removeItem(ACCESS_TOKEN);
+				localStorage.removeItem(REFRESH_TOKEN);
+			}
+		},
+		[getUserData]
+	);
+
+	const logout = useCallback(() => {
+		localStorage.removeItem(ACCESS_TOKEN);
+		localStorage.removeItem(REFRESH_TOKEN);
+		router.push('/');
+		setUserData(null);
+	}, [router]);
 
 	// useEffect(() => {
 	//   if (!user) {
@@ -114,16 +118,9 @@ export const UserContextProvider: FC<Properties> = ({ children }) => {
 	);
 
 	return isLoading ? (
-		<Stack
-			direction="row"
-			sx={{
-				height: '100%',
-				justifyContent: 'center',
-				alignItems: 'center'
-			}}
-		>
-			<CircularProgress />
-		</Stack>
+		<div className="flex h-full items-center justify-center">
+			<CenteredLoader />
+		</div>
 	) : (
 		<UserContext.Provider value={providerValue}>
 			<Navbar />

@@ -1,6 +1,5 @@
 // components/Chat.tsx
-import InfoIcon from '@mui/icons-material/Info';
-import { Box, Tooltip, Typography } from '@mui/material';
+import { InfoIcon } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -13,6 +12,12 @@ import { ROLE } from '@/data/dto/user/userInfo';
 import CenteredContainer from '../custom/CenteredContainer';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger
+} from '../ui/tooltip';
 import ChatMessage from './chatMessage';
 
 interface ChatProps {
@@ -52,7 +57,7 @@ const Chat = ({
 	);
 
 	useEffect(() => {
-		if (!socket) return;
+		if (!socket || !currentChatroom?.id) return;
 		socket.on('newMessage', (data: Message) => {
 			setMessages((prevMessages: Message[]) => [data, ...prevMessages]);
 		});
@@ -75,15 +80,15 @@ const Chat = ({
 			socket.off('newMessage');
 			socket.off('aiPartMessage');
 		};
-	}, []);
+	}, [currentChatroom, socket]);
 
 	useEffect(() => {
-		if (!currentChatroom) return;
+		if (!currentChatroom || !fetchMessages) return;
 		setCurrentPage(0);
 		setMessages([]);
 		fetchMessages(0);
 		setAiMessage('');
-	}, [currentChatroom]);
+	}, [currentChatroom, fetchMessages]);
 
 	const handleSend = () => {
 		if (!message || !message.trim() || !socket || !currentChatroom) return;
@@ -172,18 +177,14 @@ const Chat = ({
 	};
 
 	return (
-		<Box sx={{ display: 'flex', flexDirection: 'column' }}>
+		<div className="flex flex-col">
 			{messages.length === 0 ? (
-				<Box sx={{ height: 'calc(100vh - 260px)' }}>
+				<div className="h-[calc(100vh-260px)]">
 					<CenteredContainer>
-						<Typography variant="h1" sx={{ color: 'grey' }}>
-							У вас ще немає повідомлень
-						</Typography>
-						<Typography variant="h3" sx={{ color: 'grey' }}>
-							Почніть листування зараз
-						</Typography>
+						<p className="text-grey">У вас ще немає повідомлень</p>
+						<p className="text-grey">Почніть листування зараз</p>
 					</CenteredContainer>
-				</Box>
+				</div>
 			) : (
 				<InfiniteScroll
 					hasMore={true}
@@ -193,15 +194,8 @@ const Chat = ({
 					scrollableTarget="scrollableChat"
 					inverse={true}
 				>
-					<Box
-						sx={{
-							flex: 1,
-							overflowY: 'auto',
-							justifyContent: 'flex',
-							height: 'calc(100vh - 260px)',
-							flexDirection: 'column-reverse',
-							display: 'flex'
-						}}
+					<div
+						className="overflow-y-auto justify-flex h-[calc(100vh-260px)] flex-col-reverse"
 						id="scrollableChat"
 					>
 						{!!aiMessage && (
@@ -220,10 +214,10 @@ const Chat = ({
 								user={user}
 							/>
 						))}
-					</Box>
+					</div>
 				</InfiniteScroll>
 			)}
-			<Box sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
+			<div className="flex items-center p-2">
 				{[3, 5].includes(selectedTab) &&
 				!currentChatroom?.ChatroomParticipants?.some(
 					p => p.userId == user?.id
@@ -246,22 +240,26 @@ const Chat = ({
 				) : (
 					<>
 						{selectedTab === 0 && (
-							<Tooltip
-								title={
-									<Typography variant="h4">
-										Повідомлення у цьому чаті генеруються за допомогою штучного
-										інтелекту. Ми докладаємо всіх зусиль для забезпечення
-										високої якості та точності наданих консультацій. Однак, слід
-										пам&aposятати, що відповіді, надані штучним інтелектом, не
-										замінюють професійних консультацій кваліфікованого психолога
-										чи психотерапевта. Рекомендуємо звертатися до фахівців для
-										отримання більш детальної та індивідуальної допомоги у
-										складних чи критичних ситуаціях.
-									</Typography>
-								}
-							>
-								<InfoIcon sx={{ mr: 1 }} />
-							</Tooltip>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger>
+										<InfoIcon className="mr-1" />
+									</TooltipTrigger>
+									<TooltipContent className="max-w-[500px]">
+										<p className="text-sm">
+											Повідомлення у цьому чаті генеруються за допомогою
+											штучного інтелекту. Ми докладаємо всіх зусиль для
+											забезпечення високої якості та точності наданих
+											консультацій. Однак, слід пам&apos;ятати, що відповіді,
+											надані штучним інтелектом, не замінюють професійних
+											консультацій кваліфікованого психолога чи психотерапевта.
+											Рекомендуємо звертатися до фахівців для отримання більш
+											детальної та індивідуальної допомоги у складних чи
+											критичних ситуаціях.
+										</p>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 						)}
 						<Textarea
 							onKeyDown={handleKeyDown}
@@ -283,16 +281,13 @@ const Chat = ({
 						</Button>
 					</>
 				)}
-			</Box>
+			</div>
 			{user?.role.key !== ROLE.ADMIN && selectedTab !== 0 && (
-				<Typography
-					sx={{ color: 'blue', alignSelf: 'center', cursor: 'pointer' }}
-					onClick={handlePing}
-				>
+				<Button variant="link" onClick={handlePing}>
 					Запросити адміністратора
-				</Typography>
+				</Button>
 			)}
-		</Box>
+		</div>
 	);
 };
 

@@ -1,11 +1,8 @@
 // components/ChatRoomList.tsx
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { Box, List, ListItem, ListItemButton, Stack } from '@mui/material';
 import cn from 'classnames';
+import { CirclePlusIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { deleteChatroom, renameChatroom } from '@/api/chatroom.api';
@@ -13,9 +10,9 @@ import useUser from '@/context/useUser';
 import { ChatroomResponse } from '@/data/dto/chat/chat.response';
 import { ROLE } from '@/data/dto/user/userInfo';
 
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 import styles from './chat.module.scss';
-import RenamePopup from './renamePopup';
-import TabPages from './tabPages';
 
 interface ChatRoomListProps {
 	chatrooms: ChatroomResponse[];
@@ -33,7 +30,7 @@ const ChatRoomList = ({
 	setChatrooms,
 	currentChatroom,
 	setCurrentChatroom,
-	setTab,
+	// setTab,
 	tab,
 	currentPage,
 	setCurrentPage
@@ -46,6 +43,8 @@ const ChatRoomList = ({
 		title: string;
 	} | null>(null);
 	const { user } = useUser();
+	const inputRef = useRef<HTMLInputElement | null>(null);
+
 	useEffect(() => {
 		if (router.isReady && socket) {
 			socket.on('chatroomDetails', (chatroomDetails: ChatroomResponse) => {
@@ -59,7 +58,14 @@ const ChatRoomList = ({
 				socket.off('chatroomDetails');
 			}
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [router.isReady, socket]);
+
+	useEffect(() => {
+		if (renameData?.id && inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, [renameData]);
 
 	const handleCreateChatroom = async () => {
 		if (!socket) return;
@@ -90,39 +96,23 @@ const ChatRoomList = ({
 
 	return (
 		<>
-			<TabPages selectedTab={tab} setSelectedTab={setTab} />
-			<RenamePopup
-				anchorEl={renameData?.anchorEl}
-				currentName={renameData?.title || ''}
-				onClose={() => setRenameData(null)}
-				onSubmit={handleRename}
-			/>
+			{/* <TabPages selectedTab={tab} setSelectedTab={setTab} /> */}
 			{[0, 1].includes(tab) && (
-				<ListItemButton
+				<Button
+					variant="ghost"
+					size="icon"
 					onClick={handleCreateChatroom}
 					color="primary"
-					sx={{
-						justifyContent: 'flex-start !important',
-						backgroundColor: 'var(--green)',
-						'&: hover': {
-							backgroundColor: 'var(--green-hover) !important'
-						}
-					}}
-					className={cn(styles.listItem)}
+					className={cn('!justify-start rounded-md', styles.listItem)}
 				>
-					<AddIcon />
+					<CirclePlusIcon />
 					{tab === 0
 						? 'Створити чат з асистентом'
 						: 'Створити чат з терапевтом'}
-				</ListItemButton>
+				</Button>
 			)}
-			<List
-				dense
-				sx={{
-					height: '100%',
-					overflow: 'auto',
-					maxHeight: 'calc(100vh - 215px)'
-				}}
+			<div
+				className="flex flex-col h-full overflow-auto max-h-[calc(100vh-215px)]"
 				id="infiniteList"
 			>
 				<InfiniteScroll
@@ -133,18 +123,35 @@ const ChatRoomList = ({
 					scrollableTarget="infiniteList"
 				>
 					{chatrooms?.map(room => (
-						<ListItem
+						<Button
 							onClick={() => setCurrentChatroom(room)}
-							disablePadding
 							key={room.id}
-							className={cn(styles.listItem, {
-								[styles.active]: currentChatroom?.id === room.id
-							})}
+							className={cn(
+								styles.listItem,
+								'bg-transparent text-gray-700 w-full',
+								{
+									[styles.active]: currentChatroom?.id === room.id
+								}
+							)}
 						>
-							{room.title}
-							<Stack direction="row">
+							{renameData?.id === room.id ? (
+								<Input
+									ref={inputRef}
+									value={renameData.title}
+									onChange={e =>
+										setRenameData({ ...renameData, title: e.target.value })
+									}
+									onBlur={() => handleRename(renameData?.title || '')}
+								/>
+							) : (
+								<>{room.title}</>
+							)}
+
+							<div className="flex">
 								{user && [ROLE.USER, ROLE.ADMIN].includes(user?.role.key) && (
-									<Box
+									<Button
+										variant="ghost"
+										size="icon"
 										onClick={e =>
 											setRenameData({
 												anchorEl: e.currentTarget,
@@ -153,19 +160,23 @@ const ChatRoomList = ({
 											})
 										}
 									>
-										<EditIcon className={styles.listIcon} />
-									</Box>
+										<PencilIcon />
+									</Button>
 								)}
 								{[0, 1, 4, 5].includes(tab) && (
-									<Box onClick={() => handleDeleteChatroom(room.id)}>
-										<DeleteIcon className={styles.listIcon} />
-									</Box>
+									<Button
+										variant="ghost"
+										size="icon"
+										onClick={() => handleDeleteChatroom(room.id)}
+									>
+										<Trash2Icon />
+									</Button>
 								)}
-							</Stack>
-						</ListItem>
+							</div>
+						</Button>
 					))}
 				</InfiniteScroll>
-			</List>
+			</div>
 		</>
 	);
 };

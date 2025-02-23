@@ -55,7 +55,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 		};
 
 		return (
-			<div className={cn('relative group', className)}>
+			<div className="relative group w-full">
 				<textarea
 					{...props}
 					className={cn(
@@ -84,7 +84,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 				{_placeholder && (
 					<Placeholder
 						focused={isFocused || !!props.value}
-						transparent={true}
+						textArea={true}
 						error={!!error}
 						placeholder={_placeholder}
 						onClick={handlePlaceholderClick}

@@ -1,18 +1,15 @@
-import ChatIcon from '@mui/icons-material/Chat';
-import LogoutIcon from '@mui/icons-material/Logout';
-import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import {
-	ClickAwayListener,
-	List,
-	ListItem,
-	Popper,
-	Typography
-} from '@mui/material';
+import { Grid3X3Icon, LogOutIcon, MessageCircleIcon } from 'lucide-react';
 import { useRouter } from 'next/router';
 
 import useUser from '@/context/useUser';
 import { ROLE } from '@/data/dto/user/userInfo';
 
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger
+} from '../ui/dropdown-menu';
 import styles from './navbar.module.scss';
 
 const AccountMenu = ({
@@ -26,40 +23,37 @@ const AccountMenu = ({
 	const { user, logout } = useUser();
 
 	return (
-		<Popper open={!!anchorEl} anchorEl={anchorEl} placement="bottom-end">
-			<ClickAwayListener onClickAway={onClose}>
-				<List sx={{ borderRadius: '5px', mt: 1, width: '200px' }}>
-					{user?.role && [ROLE.ADMIN, ROLE.USER].includes(user?.role.key) && (
-						<ListItem
-							className={styles.listItem}
-							onClick={() => router.push('/tests/overview')}
-						>
-							<ViewModuleIcon />
-							<Typography sx={{ textWrap: 'nowrap' }}>
-								Мої результати
-							</Typography>
-						</ListItem>
-					)}
-					<ListItem
+		<DropdownMenu open={!!anchorEl} onOpenChange={open => !open && onClose()}>
+			<DropdownMenuTrigger className="absolute right-0"></DropdownMenuTrigger>
+			<DropdownMenuContent className="absolute right-0 top-6 w-[170px]">
+				{user?.role && [ROLE.ADMIN, ROLE.USER].includes(user?.role.key) && (
+					<DropdownMenuItem
 						className={styles.listItem}
-						onClick={() => router.push('/chats')}
+						onClick={() => router.push('/tests/overview')}
 					>
-						<ChatIcon />
-						<Typography>Чати</Typography>
-					</ListItem>
-					<ListItem
-						className={styles.listItem}
-						onClick={() => {
-							logout();
-							onClose();
-						}}
-					>
-						<LogoutIcon />
-						<Typography>Вихід</Typography>
-					</ListItem>
-				</List>
-			</ClickAwayListener>
-		</Popper>
+						<Grid3X3Icon />
+						<p className="text-wrap">Мої результати</p>
+					</DropdownMenuItem>
+				)}
+				<DropdownMenuItem
+					className={styles.listItem}
+					onClick={() => router.push('/chats')}
+				>
+					<MessageCircleIcon />
+					<p className="text-wrap">Чати</p>
+				</DropdownMenuItem>
+				<DropdownMenuItem
+					className={styles.listItem}
+					onClick={() => {
+						logout();
+						onClose();
+					}}
+				>
+					<LogOutIcon />
+					<p className="text-wrap">Вихід</p>
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };
 

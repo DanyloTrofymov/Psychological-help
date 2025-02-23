@@ -1,6 +1,5 @@
-import { Box, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	getAiChats,
@@ -23,8 +22,9 @@ const ChatRoom = () => {
 	const [currentPage, setCurrentPage] = useState(0);
 	const router = useRouter();
 	const { user } = useUser();
+	const [isLoading, setIsLoading] = useState(false);
 
-	const fetchChats = async () => {
+	const fetchChats = useCallback(async () => {
 		if (selectedTab == -1) return;
 		try {
 			let refetchFunc;
@@ -44,19 +44,21 @@ const ChatRoom = () => {
 					refetchFunc = getAllChats;
 					break;
 				default:
-					refetchFunc = getUsersChats;
+					refetchFunc = getAiChats;
 			}
 			const response = await refetchFunc(currentPage, 20);
 			if (response.status == 200 && response.data) {
-				setChatrooms(prev => [...prev, ...response.data.content]);
+				await setChatrooms(prev => [...prev, ...response.data.content]);
+				setIsLoading(false);
 			}
 		} catch (error) {
 			console.error('Error fetching chatrooms:', error);
 		}
-	};
+	}, [selectedTab, currentPage]);
 
 	useEffect(() => {
-		if (!router.isReady || selectedTab == -1) return;
+		// if (!router.isReady || selectedTab == -1) return;
+		if (!router.isReady || !fetchChats) return;
 		setCurrentPage(0);
 		setChatrooms([]);
 		fetchChats();
@@ -81,14 +83,19 @@ const ChatRoom = () => {
 				case 5:
 					newRoute = '/chats/all';
 					break;
+				default:
+					newRoute = '/chats/ai';
+					break;
 			}
 			router.replace(newRoute, undefined, { shallow: true });
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedTab, router.isReady]);
 
 	useEffect(() => {
 		if (currentPage === 0) return;
 		fetchChats();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentPage]);
 
 	useEffect(() => {
@@ -107,6 +114,7 @@ const ChatRoom = () => {
 		} else if (pathname == '/chats/all' && selectedTab !== 5) {
 			setSelectedTab(5);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [router.isReady]);
 
 	useEffect(() => {
@@ -114,6 +122,7 @@ const ChatRoom = () => {
 		router.push({ query: { chatId: currentChatroom?.id } }, undefined, {
 			shallow: true
 		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentChatroom]);
 
 	useEffect(() => {
@@ -124,6 +133,7 @@ const ChatRoom = () => {
 		} else if (chatrooms.length > 0) {
 			setCurrentChatroom(chatrooms[0]);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chatrooms]);
 
 	const isParticipant = useMemo(() => {
@@ -131,18 +141,13 @@ const ChatRoom = () => {
 		return (
 			chat?.ChatroomParticipants?.some(p => p.userId === user?.id) || false
 		);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentChatroom, chatrooms, user?.id]);
 
 	return (
-		<Box
-			sx={{
-				height: 'calc(100vh - 170px)',
-				display: 'flex',
-				flexDirection: 'column'
-			}}
-		>
-			<Stack direction={'row'} sx={{ flex: 1 }}>
-				<Box sx={{ minWidth: '320px', width: '25vw' }}>
+		<div className="h-[calc(100vh-170px)] flex flex-col">
+			<div className="flex-1 flex">
+				<div className="min-w-[320px] w-[25vw]">
 					<ChatRoomList
 						chatrooms={chatrooms}
 						currentChatroom={currentChatroom}
@@ -153,16 +158,12 @@ const ChatRoom = () => {
 						currentPage={currentPage}
 						setCurrentPage={setCurrentPage}
 					/>
-				</Box>
-				<Box sx={{ width: '100%' }}>
-					{chatrooms.length === 0 ? (
+				</div>
+				<div className="w-full">
+					{chatrooms.length === 0 && !isLoading ? (
 						<CenteredContainer>
-							<Typography variant="h1" sx={{ color: 'grey' }}>
-								Створіть новий чат
-							</Typography>
-							<Typography variant="h3" sx={{ color: 'grey' }}>
-								Почніть листування зараз
-							</Typography>
+							<h1 className="text-grey-500">Створіть новий чат</h1>
+							<h3 className="text-grey-500">Почніть листування зараз</h3>
 						</CenteredContainer>
 					) : (
 						<Chat
@@ -172,9 +173,9 @@ const ChatRoom = () => {
 							setCurrentTab={setSelectedTab}
 						/>
 					)}
-				</Box>
-			</Stack>
-		</Box>
+				</div>
+			</div>
+		</div>
 	);
 };
 

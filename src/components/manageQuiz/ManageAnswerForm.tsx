@@ -1,11 +1,11 @@
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Box, IconButton, Stack } from '@mui/material';
 import { FormikErrors, FormikTouched } from 'formik';
+import { Trash2Icon } from 'lucide-react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { QuizQuestionRequest, QuizRequest } from '@/data/dto/quiz/quiz.request';
+import { cn } from '@/lib/utils';
 
 import { Input } from '../ui/input';
 import styles from './quizForm.module.scss';
@@ -37,42 +37,39 @@ const AnswerForm = ({
 	const router = useRouter();
 	const [removingIndex, setRemovingIndex] = useState<number | null>(null);
 
-	const handleAddAnswer = () => {
+	const handleAddAnswer = useCallback(() => {
 		const newAnswer = { title: '', score: 0, mediaId: undefined };
 		const updatedAnswers = [...question.answers, newAnswer];
 		setFieldValue(`questions[${questionIndex}].answers`, updatedAnswers);
-	};
+	}, [question.answers, questionIndex, setFieldValue]);
 
-	const handleRemoveAnswer = (index: number) => {
-		setRemovingIndex(index);
-		setTimeout(() => {
-			setFieldValue(
-				`questions[${questionIndex}].answers`,
-				question.answers.filter((_, i) => i !== index)
-			);
-			setRemovingIndex(null);
-		}, 300);
-	};
+	const handleRemoveAnswer = useCallback(
+		(index: number) => {
+			setRemovingIndex(index);
+			setTimeout(() => {
+				setFieldValue(
+					`questions[${questionIndex}].answers`,
+					question.answers.filter((_, i) => i !== index)
+				);
+				setRemovingIndex(null);
+			}, 300);
+		},
+		[question.answers, questionIndex, setFieldValue]
+	);
 
 	return (
-		<Box sx={{ backgroundColor: '#dfdfdf', borderRadius: '4px' }}>
+		<div className="flex flex-col bg-gray-200 rounded-md">
 			{question.answers.map((answer, idx) => (
 				// eslint-disable-next-line react/jsx-no-undef
-				<Stack
-					className={`${styles.animatedItem} ${removingIndex === idx ? styles.deletingItem : ''}`}
-					direction={'column'}
+				<div
+					className={cn(
+						styles.animatedItem,
+						removingIndex === idx ? styles.deletingItem : '',
+						'flex flex-col pt-2 pl-4 pr-4 mt-1 rounded-md gap-4'
+					)}
 					key={idx}
-					sx={{
-						p: '8px 16px 0px 16px',
-						mt: 1
-					}}
 				>
-					<Stack
-						direction="row"
-						alignItems="flex-start"
-						spacing={2}
-						sx={{ pb: 2 }}
-					>
+					<div className="flex flex-row items-start gap-2 pb-2">
 						<Input
 							name={`questions[${questionIndex}].answers[${idx}].title`}
 							placeholder="Текст відповіді"
@@ -124,28 +121,26 @@ const AnswerForm = ({
 							}
 						/>
 						{!router.query.id && (
-							<Box sx={{ pt: 1 }}>
-								<IconButton
+							<div className="pt-1">
+								<Button
 									onClick={() => handleRemoveAnswer(idx)}
-									sx={{ height: '35px', width: '35px' }}
+									variant="ghost"
+									size="icon"
+									className="h-10 w-10"
 								>
-									<DeleteOutlineIcon />
-								</IconButton>
-							</Box>
+									<Trash2Icon />
+								</Button>
+							</div>
 						)}
-					</Stack>
-				</Stack>
+					</div>
+				</div>
 			))}
 			{!router.query.id && (
-				<Button
-					onClick={() => handleAddAnswer()}
-					className="m-2 mt-0 w-max"
-					variant={'outline'}
-				>
+				<Button onClick={() => handleAddAnswer()} className="m-2 mt-0 w-max">
 					Додати відповідь
 				</Button>
 			)}
-		</Box>
+		</div>
 	);
 };
 

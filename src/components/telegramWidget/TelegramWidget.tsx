@@ -39,12 +39,10 @@ const TelegramLoginWidget = () => {
 		return () => {
 			document.getElementById('telegram-login-psycological_help_bot')?.remove();
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [user]);
 
-	return (
-		// You'll likely replace this with the actual UI button for the widget
-		<div id="telegramLogin" />
-	);
+	return <div id="telegramLogin" />;
 };
 
 export default TelegramLoginWidget;

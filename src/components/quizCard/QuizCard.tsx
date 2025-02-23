@@ -1,21 +1,16 @@
-import DeleteIcon from '@mui/icons-material/Delete';
-import DoneIcon from '@mui/icons-material/Done';
-import EditIcon from '@mui/icons-material/Edit';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
-	Card,
-	CardContent,
-	CardMedia,
-	IconButton,
-	Stack,
-	Tooltip,
-	Typography
-} from '@mui/material';
+	ChartAreaIcon,
+	CheckIcon,
+	EyeIcon,
+	PencilIcon,
+	Trash2Icon
+} from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { deleteQuiz } from '@/api/quiz.api';
+import { Card, CardContent } from '@/components/ui/card';
 import useUser from '@/context/useUser';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { ROLE } from '@/data/dto/user/userInfo';
@@ -23,6 +18,13 @@ import { getQuestionWordForm } from '@/data/utils';
 
 import AlertDialog from '../alertDialog/AlertDialog';
 import LoginModal from '../loginModal/loginModal';
+import { Button } from '../ui/button';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger
+} from '../ui/tooltip';
 import styles from './quizCard.module.scss';
 
 interface QuizCardProps {
@@ -37,150 +39,131 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 	const { user } = useUser();
 	const router = useRouter();
 
-	const handleDeleteQuiz = async () => {
+	const handleDeleteQuiz = useCallback(async () => {
 		const response = await deleteQuiz(quiz.id);
 		if (response && response.status === 200) {
 			router.reload();
 		}
-	};
+	}, [quiz.id, router]);
 
-	const handleQuizClick = () => {
+	const handleQuizClick = useCallback(() => {
 		if (user) {
 			router.push(`/tests/${quiz.id}`);
 		} else {
 			setShowModal(true);
 		}
-	};
+	}, [user, quiz.id, router]);
+
 	return (
 		<>
-			<LoginModal open={showModal} onClose={() => setShowModal(false)} />
+			<LoginModal open={showModal} onOpenChange={setShowModal} />
 			<Card
 				className={styles.quizCard}
 				onMouseEnter={() => setVisible(true)}
 				onMouseLeave={() => setVisible(false)}
-				sx={{ height: '100%' }}
 				onClick={handleQuizClick}
 			>
-				<CardMedia
-					component={'img'}
-					src={quiz.media ? quiz.media.url : defaultImage}
-					alt="Media"
-					height="200"
-					title={quiz.title}
-				/>
+				<div className="relative h-40 w-full mb-2">
+					<Image
+						src={quiz.media ? quiz.media.url : defaultImage}
+						alt="Media"
+						layout="fill"
+					/>
+				</div>
 				<CardContent>
-					<Stack direction="row" justifyContent={'space-between'}>
-						<Stack direction="column" width={'100%'}>
-							<Typography variant="h5" gutterBottom>
-								{quiz.title}
-							</Typography>
-
+					<div className="flex items-center justify-between">
+						<div className="flex flex-col w-full">
+							<div className="flex items-center justify-between">
+								<p className="text-2xl font-semibold h-12">{quiz.title}</p>
+								{visible && user?.role.key === ROLE.ADMIN && (
+									<div className="flex items-center gap-2">
+										<Button
+											variant="ghost"
+											size="icon"
+											onClick={e => {
+												e.stopPropagation();
+												router.push(`/tests/statistic/${quiz.id}`);
+											}}
+										>
+											<ChartAreaIcon />
+										</Button>
+										<Button
+											variant="ghost"
+											size="icon"
+											onClick={e => {
+												e.stopPropagation();
+												router.push(`/tests/manage/${quiz.id}`);
+											}}
+										>
+											<PencilIcon />
+										</Button>
+										<Button
+											variant="ghost"
+											size="icon"
+											onClick={e => {
+												e.stopPropagation();
+												setIsDeleting(true);
+											}}
+										>
+											<Trash2Icon />
+										</Button>
+									</div>
+								)}
+							</div>
 							{quiz.subtitle && (
-								<Typography
-									variant="subtitle1"
-									sx={{
-										overflow: 'hidden',
-										textOverflow: 'ellipsis',
-										display: '-webkit-box',
-										WebkitLineClamp: '3',
-										WebkitBoxOrient: 'vertical'
-									}}
-								>
+								<p className="overflow-hidden text-ellipsis whitespace-pre-wrap">
 									{quiz.subtitle}
-								</Typography>
+								</p>
 							)}
-							<Typography variant="subtitle1" fontWeight={600}>
+							<p className="font-semibold">
 								{getQuestionWordForm(quiz._count.questions)}
-							</Typography>
-							<Tooltip
-								title={
-									<Typography variant="subtitle1">
-										Цей тест пройшли {quiz._count.take} разів
-									</Typography>
-								}
-							>
-								<Stack
-									direction="row"
-									alignItems={'center'}
-									width={'max-content'}
-								>
-									<VisibilityIcon sx={{ mr: 1 }} />
-									<Typography variant="subtitle1">
-										{quiz._count.take}
-									</Typography>
-								</Stack>
-							</Tooltip>
-						</Stack>
-						<Stack direction="row" alignItems="center" height="max-content">
-							{visible && user?.role.key === ROLE.ADMIN && (
-								<>
-									<IconButton
-										onClick={e => {
-											e.stopPropagation();
-											router.push(`/tests/statistic/${quiz.id}`);
-										}}
-										sx={{ height: '45px', width: '45px' }}
-									>
-										<LeaderboardIcon />
-									</IconButton>
-									<IconButton
-										onClick={e => {
-											e.stopPropagation();
-											router.push(`/tests/manage/${quiz.id}`);
-										}}
-										sx={{ height: '45px', width: '45px' }}
-									>
-										<EditIcon />
-									</IconButton>
-									<IconButton
-										onClick={e => {
-											e.stopPropagation();
-											setIsDeleting(true);
-										}}
-										sx={{ height: '45px', width: '45px' }}
-									>
-										<DeleteIcon />
-									</IconButton>
-								</>
-							)}
-							{quiz.lastTakeId && (
-								<Tooltip
-									title={
-										<>
-											<Typography variant="subtitle1">
-												Ви вже пройшли цей тест
-											</Typography>
-											<Typography
-												variant="subtitle2"
-												sx={{
-													textDecoration: 'underline',
-													cursor: 'pointer',
-													'&:hover': {
-														cursor: 'pointer',
-														color: 'blue'
-													}
-												}}
-												onClick={e => {
-													e.stopPropagation();
-													router.push(`/tests/overview/${quiz.lastTakeId}`);
-												}}
-											>
-												Переглянути результати
-											</Typography>
-										</>
-									}
-								>
-									<DoneIcon color="success" sx={{ height: '45px' }} />
-								</Tooltip>
-							)}
-						</Stack>
-					</Stack>
+							</p>
+							<div className="flex items-center w-full justify-between">
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger>
+											<div className="flex items-center gap-1">
+												<EyeIcon className="mr-1" />
+												<p className="text-sm">{quiz._count.take}</p>
+											</div>
+										</TooltipTrigger>
+										<TooltipContent>
+											<p className="text-sm">
+												Цей тест пройшли {quiz._count.take} разів
+											</p>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+								{quiz.lastTakeId && (
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger>
+												<CheckIcon className="h-5 w-5 stroke-green-700" />
+											</TooltipTrigger>
+											<TooltipContent>
+												<p className="text-sm">Ви вже пройшли цей тест</p>
+												<p
+													className="text-sm underline cursor-pointer hover:text-blue-400"
+													onClick={e => {
+														e.stopPropagation();
+														router.push(`/tests/overview/${quiz.lastTakeId}`);
+													}}
+												>
+													Переглянути результати
+												</p>
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								)}
+							</div>
+						</div>
+					</div>
 				</CardContent>
 			</Card>
 			<AlertDialog
 				open={isDeleting}
-				title="Видалити тест,"
-				text="Ви впевнені, щл хочете видалити цей тест?"
+				title="Видалити тест?"
+				text="Ви впевнені, що хочете видалити цей тест?"
 				agreeButtonText="Видалити"
 				onCancel={() => setIsDeleting(false)}
 				onAccept={() => handleDeleteQuiz()}
