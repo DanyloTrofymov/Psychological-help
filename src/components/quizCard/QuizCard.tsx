@@ -73,9 +73,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 					<div className="flex items-center justify-between">
 						<div className="flex flex-col w-full">
 							<div className="flex items-center justify-between">
-								<p className="text-2xl text-wrap break-all">
-									{quiz.title + '123123123123123123123123123123123123123123123'}
-								</p>
+								<p className="text-2xl text-wrap break-all">{quiz.title}</p>
 								{visible && user?.role.key === ROLE.ADMIN && (
 									<div className="flex items-center gap-2">
 										<Button
