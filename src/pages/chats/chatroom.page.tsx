@@ -147,7 +147,7 @@ const ChatRoom = () => {
 	return (
 		<div className="h-[calc(100vh-170px)] flex flex-col">
 			<div className="flex-1 flex">
-				<div className="min-w-[320px] w-[25vw]">
+				<div className="md:min-w-[300px] md:w-[25vw] min-w-0 ">
 					<ChatRoomList
 						chatrooms={chatrooms}
 						currentChatroom={currentChatroom}
