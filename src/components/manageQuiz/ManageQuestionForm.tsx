@@ -1,13 +1,13 @@
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
 import { FormikErrors, FormikTouched } from 'formik/dist/types';
+import { CopyIcon, Trash2Icon } from 'lucide-react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
+import { Button } from '@/components/ui/button';
 import { QuizRequest } from '@/data/dto/quiz/quiz.request';
+import { cn } from '@/lib/utils';
 
-import Button from '../custom/Button';
+import { Input } from '../ui/input';
 import AnswerForm from './ManageAnswerForm';
 import styles from './quizForm.module.scss';
 
@@ -33,87 +33,73 @@ const QuestionForm = ({
 		<T = any>(fieldOrEvent: T): T extends string ? (e: any) => void : void;
 	};
 }) => {
-	const [animationClasses, setAnimationClasses] = useState<string[]>([]);
 	const router = useRouter();
-	useEffect(() => {
-		setAnimationClasses(values.questions.map(() => 'entered'));
-	}, [values.questions]);
+	const [removingIndex, setRemovingIndex] = useState<number | null>(null);
 
-	const handleAddQuestion = (index: number) => {
-		const newQuestions = [
-			...values.questions.slice(0, index + 1),
-			{
-				title: '',
-				subtitle: '',
-				answers: [
-					{ title: '', score: 0, mediaId: undefined },
-					{ title: '', score: 0, mediaId: undefined }
-				]
-			},
-			...values.questions.slice(index + 1)
-		];
-		setFieldValue('questions', newQuestions);
-		setAnimationClasses([
-			...animationClasses.slice(0, index + 1),
-			'entering',
-			...animationClasses.slice(index + 1)
-		]);
-		setTimeout(() => {
-			setAnimationClasses(current =>
-				current.map((cls, idx) => (idx === index + 1 ? 'entered' : cls))
-			);
-		}, 300); // Animation duration
-	};
+	const handleAddQuestion = useCallback(
+		(index: number) => {
+			const newQuestions = [
+				...values.questions.slice(0, index + 1),
+				{
+					title: '',
+					subtitle: '',
+					answers: [
+						{ title: '', score: 0, mediaId: undefined },
+						{ title: '', score: 0, mediaId: undefined }
+					]
+				},
+				...values.questions.slice(index + 1)
+			];
+			setFieldValue('questions', newQuestions);
+		},
+		[values.questions, setFieldValue]
+	);
 
-	const handleCloneQuestion = (index: number) => {
-		const newQuestions = [
-			...values.questions.slice(0, index + 1),
-			{
-				title: values.questions[index].title,
-				subtitle: values.questions[index].subtitle,
-				answers: values.questions[index].answers
-			},
-			...values.questions.slice(index + 1)
-		];
-		setFieldValue('questions', newQuestions);
-		setAnimationClasses([
-			...animationClasses.slice(0, index + 1),
-			'entering',
-			...animationClasses.slice(index + 1)
-		]);
-		setTimeout(() => {
-			setAnimationClasses(current =>
-				current.map((cls, idx) => (idx === index + 1 ? 'entered' : cls))
-			);
-		}, 300); // Animation duration
-	};
+	const handleCloneQuestion = useCallback(
+		(index: number) => {
+			const newQuestions = [
+				...values.questions.slice(0, index + 1),
+				{
+					title: values.questions[index].title,
+					subtitle: values.questions[index].subtitle,
+					answers: values.questions[index].answers
+				},
+				...values.questions.slice(index + 1)
+			];
+			setFieldValue('questions', newQuestions);
+		},
+		[values.questions, setFieldValue]
+	);
 
-	const handleRemoveQuestion = (index: number) => {
-		setAnimationClasses(current =>
-			current.map((cls, idx) => (idx === index ? 'exiting' : cls))
-		);
-		setTimeout(() => {
-			setFieldValue(
-				'questions',
-				values.questions.filter((_, i) => i !== index)
-			);
-			setAnimationClasses(current => current.filter((_, i) => i !== index));
-		}, 300); // Ensure this matches your CSS animation duration
-	};
+	const handleRemoveQuestion = useCallback(
+		(index: number) => {
+			setRemovingIndex(index);
+			setTimeout(() => {
+				setFieldValue(
+					'questions',
+					values.questions.filter((_, i) => i !== index)
+				);
+				setRemovingIndex(null);
+			}, 300);
+		},
+		[values.questions, setFieldValue]
+	);
 
 	return (
-		<>
+		<div className="flex flex-col gap-4">
 			{values.questions.map((question, index) => (
-				<Stack
+				<div
 					key={index}
-					direction="column"
-					spacing={2}
-					className={`${styles.animatedItem} ${styles[animationClasses[index]]}`}
-					sx={{ p: 2, mt: 1, borderRadius: '4px', backgroundColor: '#f5f5f5' }}
+					className={cn(
+						styles.animatedItem,
+						removingIndex === index ? styles.deletingItem : '',
+						'flex flex-col p-2 mt-1 rounded-md bg-gray-100 gap-4'
+					)}
 				>
-					<TextField
+					<Input
 						name={`questions[${index}].title`}
-						label="Заголовок"
+						placeholder="Заголовок"
+						placeholderTransparent
 						required
 						onBlur={handleBlur(`questions[${index}].title`)}
 						onChange={handleChange}
@@ -121,35 +107,23 @@ const QuestionForm = ({
 						error={
 							touched?.questions &&
 							touched?.questions[index]?.title &&
-							Boolean(
-								errors.questions &&
-									((errors.questions[index] as any)?.title as string)
-							)
-						}
-						helperText={
-							touched?.questions &&
-							touched?.questions[index]?.title &&
 							errors.questions &&
 							((errors.questions[index] as any)?.title as string)
 						}
 					/>
-					<TextField
+					<Input
 						name={`questions[${index}].subtitle`}
-						label="Підзаголовок"
+						placeholder="Підзаголовок"
+						placeholderTransparent
 						onChange={handleChange}
 						onBlur={handleBlur(`questions[${index}].subtitle`)}
 						value={values.questions[index].subtitle}
 						error={
 							touched?.questions &&
 							touched?.questions[index] &&
-							Boolean(
-								errors.questions &&
-									((errors.questions[index] as any)?.subtitle as string)
-							)
-						}
-						helperText={
-							errors.questions &&
-							((errors.questions[index] as any)?.subtitle as string as string)
+							errors.questions
+								? ((errors.questions[index] as any)?.subtitle as string)
+								: ''
 						}
 					/>
 					<AnswerForm
@@ -161,53 +135,48 @@ const QuestionForm = ({
 						touched={touched}
 						errors={errors}
 					/>
-					<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14, pl: 3 }}>
-						{values.questions[index].answers.length < 2 &&
-							'Додайте мінімум 2 запитання'}
-					</Typography>
-					<Stack direction="row" spacing={2} justifyContent={'space-between'}>
+					{values.questions[index].answers.length < 2 && (
+						<p className="text-red-500 text-sm pl-3">
+							Додайте мінімум 2 запитання
+						</p>
+					)}
+					<div className="flex justify-between gap-2">
 						{!router.query.id && (
 							<>
 								<Button
 									onClick={() => {
 										handleAddQuestion(index);
 									}}
-									sx={{ m: 2, ml: 3 }}
+									className="m-2"
 								>
 									Додати запитання
 								</Button>
-								<Box>
-									<IconButton
-										sx={{
-											mr: 2,
-											height: '35px',
-											width: '35px'
-										}}
+								<div className="flex gap-2">
+									<Button
+										variant="ghost"
+										size="icon"
 										onClick={() => {
 											handleCloneQuestion(index);
 										}}
 									>
-										<ContentCopyIcon />
-									</IconButton>
-									<IconButton
-										sx={{
-											mr: 2,
-											height: '35px',
-											width: '35px'
-										}}
+										<CopyIcon />
+									</Button>
+									<Button
+										variant="ghost"
+										size="icon"
 										onClick={() => {
 											handleRemoveQuestion(index);
 										}}
 									>
-										<DeleteOutlineIcon />
-									</IconButton>
-								</Box>
+										<Trash2Icon />
+									</Button>
+								</div>
 							</>
 						)}
-					</Stack>
-				</Stack>
+					</div>
+				</div>
 			))}
-		</>
+		</div>
 	);
 };
 

@@ -22,12 +22,7 @@ export function Layout({
 	const router = useRouter();
 	const { user } = useUser();
 
-	const checkUserPermission = async () => {
-		setIsLoadingToCheckUser(true);
-		handleAccess();
-	};
-
-	const handleAccess = async () => {
+	const handleAccess = useCallback(async () => {
 		if (!user) {
 			setIsLoadingToCheckUser(false);
 			return;
@@ -45,7 +40,12 @@ export function Layout({
 			}
 		}
 		setIsLoadingToCheckUser(false);
-	};
+	}, [user, router]);
+
+	const checkUserPermission = useCallback(async () => {
+		setIsLoadingToCheckUser(true);
+		handleAccess();
+	}, [handleAccess]);
 
 	const checkLinks = useCallback(() => {
 		const isPublicPage = Object.values(publicPages).some(

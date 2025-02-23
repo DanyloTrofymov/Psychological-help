@@ -1,7 +1,9 @@
-import { Avatar, Stack, Typography } from '@mui/material';
+import { UserRoundIcon } from 'lucide-react';
+import Image from 'next/image';
 
 import { Message } from '@/data/dto/chat/chat.response';
 import { UserResponse } from '@/data/dto/user/userInfo';
+import { cn } from '@/lib/utils';
 
 interface ChatMessageProps {
 	msg: Message;
@@ -33,56 +35,56 @@ const ChatMessage = ({ msg, user, selectedTab }: ChatMessageProps) => {
 	const isCurrentUser = msg.userId === user?.id;
 
 	return (
-		<Stack
-			direction={isCurrentUser ? 'row-reverse' : 'row'}
-			alignItems={'flex-start'}
+		<div
+			className={cn(
+				'flex items-start',
+				{ 'flex-row-reverse': isCurrentUser },
+				{ 'flex-row': !isCurrentUser }
+			)}
 		>
-			<Avatar
-				src={avatarSrc}
-				sx={{ m: '0px  8px', mt: '20px', width: 30, height: 30 }}
-				alt="avatar"
-			/>
-			<Stack
-				direction={'column'}
-				sx={{
-					backgroundColor: isCurrentUser ? '#dcf8c6' : '#c1d8f3',
-					maxWidth: '60vw',
-					borderRadius: '20px',
-					alignSelf: isCurrentUser ? 'flex-end' : 'flex-start',
-					mt: '10px',
-					p: '4px'
-				}}
+			<div className="flex relative my-0 mx-2 mt-5 w-8 h-8 bg-slate-300 text-white rounded-full justify-center items-center">
+				{avatarSrc ? (
+					<Image
+						src={avatarSrc}
+						alt="avatar"
+						fill
+						className="object-cover rounded-full"
+					/>
+				) : (
+					<UserRoundIcon />
+				)}
+			</div>
+			<div
+				className={cn(
+					'flex flex-col max-w-[60vw] border rounded-2xl mt-3 p-1',
+					{ 'bg-[#c1d8f3]': !isCurrentUser },
+					{ 'bg-[#dcf8c6]': isCurrentUser },
+					{ 'flex-start': !isCurrentUser },
+					{ 'flex-end': isCurrentUser }
+				)}
 			>
-				<Typography
-					sx={{
-						fontSize: 14,
-						fontWeight: 600,
-						padding: '0px 10px',
-						alignSelf: isCurrentUser ? 'flex-end' : 'flex-start',
-						color: '#5c5c5c'
-					}}
+				<p
+					className={cn(
+						'font-semibold px-3',
+						{ 'flex-end': isCurrentUser },
+						{ 'flex-start': !isCurrentUser }
+					)}
 				>
 					{name}
-				</Typography>
-				<Typography
-					sx={{
-						padding: '0px 10px',
-						overflowWrap: 'break-word',
-						overflow: 'hidden'
-					}}
+				</p>
+				<p
+					className="px-2 overflow-wrap-break-word overflow-hidden"
 					dangerouslySetInnerHTML={{
 						__html: formatMessage(msg.message)
 					}}
 				/>
 				{msg?.createdAt && (
-					<Typography
-						sx={{
-							fontSize: 14,
-							fontWeight: 600,
-							padding: '0px 10px',
-							alignSelf: isCurrentUser ? 'flex-end' : 'flex-start',
-							color: '#5c5c5c'
-						}}
+					<p
+						className={cn(
+							'text-sm  px-3',
+							{ 'flex-end': isCurrentUser },
+							{ 'flex-start': !isCurrentUser }
+						)}
 					>
 						{new Intl.DateTimeFormat('en-GB', {
 							dateStyle: 'short',
@@ -90,10 +92,10 @@ const ChatMessage = ({ msg, user, selectedTab }: ChatMessageProps) => {
 						})
 							.format(new Date(msg?.createdAt))
 							.replaceAll('/', '.')}
-					</Typography>
+					</p>
 				)}
-			</Stack>
-		</Stack>
+			</div>
+		</div>
 	);
 };
 

@@ -1,24 +1,25 @@
-import { Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
-
-import Button from '../custom/Button';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 const LoginModal = ({
 	open,
-	onClose
+	onOpenChange
 }: {
 	open: boolean;
-	onClose: () => void;
+	onOpenChange: (open: boolean) => void;
 }) => (
-	<Dialog open={open} onClose={onClose}>
-		<DialogTitle>
-			<Typography variant="h1">
-				Для цієї дії необхідно авторизуватися
-			</Typography>
-		</DialogTitle>
-		<DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
-			<Button variant="contained" onClick={onClose}>
-				Ок
-			</Button>
+	<Dialog open={open} onOpenChange={onOpenChange}>
+		<DialogContent>
+			<DialogTitle>
+				<p className="text-2xl font-semibold">
+					Для цієї дії необхідно авторизуватися
+				</p>
+			</DialogTitle>
+			<div className="flex flex-col gap-2 items-center">
+				<Button onClick={() => onOpenChange(false)} className="w-min">
+					Ок
+				</Button>
+			</div>
 		</DialogContent>
 	</Dialog>
 );

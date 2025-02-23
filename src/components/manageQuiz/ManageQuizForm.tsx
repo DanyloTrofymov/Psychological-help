@@ -1,14 +1,13 @@
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Box, IconButton, Stack, TextField, Typography } from '@mui/material';
 import { FormikErrors, useFormik } from 'formik';
+import { CloudUploadIcon, Trash2Icon } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { uploadFileToStorage } from '@/api/media.api';
 import { createQuiz, getQuizById, updateQuiz } from '@/api/quiz.api';
+import { Button } from '@/components/ui/button';
 import { QuizQuestionRequest } from '@/data/dto/quiz/quiz.request';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { MediaResponse } from '@/data/dto/user/userInfo';
@@ -23,9 +22,11 @@ import {
 	UPLOAD_MEDIA
 } from '@/data/messageData';
 import { QuizSchema } from '@/data/validation/quizValidation';
+import { cn } from '@/lib/utils';
 
-import Button from '../custom/Button';
 import UploadMedia from '../mediaUpload/mediaUpload';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
 import QuestionForm from './ManageQuestionForm';
 import styles from './quizForm.module.scss';
 
@@ -101,35 +102,40 @@ const QuizForm = () => {
 		}, 0);
 	}, [values.questions]);
 
-	const handleUploadMedia = async (file: File) => {
-		if (file) {
-			try {
-				const response = await uploadFileToStorage(file);
-				if (response && response.status === 201) {
-					const media: MediaResponse = response.data;
-					setFieldValue('mediaId', media.id);
-					setMediaUrl(media.url);
-					enqueueSnackbar(UPLOAD_MEDIA, {
-						variant: MESSAGE_TYPE.SUCCESS
+	const handleUploadMedia = useCallback(
+		async (file: File) => {
+			if (file) {
+				try {
+					const response = await uploadFileToStorage(file);
+					if (response && response.status === 201) {
+						const media: MediaResponse = response.data;
+						setFieldValue('mediaId', media.id);
+						setMediaUrl(media.url);
+						enqueueSnackbar(UPLOAD_MEDIA, {
+							variant: MESSAGE_TYPE.SUCCESS
+						});
+					}
+				} catch (e) {
+					console.error(e);
+					enqueueSnackbar(SOMETHING_WENT_WRONG, {
+						variant: MESSAGE_TYPE.ERROR
 					});
 				}
-			} catch (e) {
-				console.error(e);
-				enqueueSnackbar(SOMETHING_WENT_WRONG, {
-					variant: MESSAGE_TYPE.ERROR
-				});
 			}
-		}
-	};
+		},
+		[enqueueSnackbar, setFieldValue]
+	);
 
-	const handleRemoveImage = () => {
+	const handleRemoveImage = useCallback(() => {
 		setMediaUrl(undefined);
 		setFieldValue('mediaId', undefined);
-	};
+	}, [setFieldValue]);
+
 	useEffect(() => {
 		if (router.isReady) {
 			setQuizId(router.query.id as string);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [router.isReady]);
 
 	useEffect(() => {
@@ -151,7 +157,9 @@ const QuizForm = () => {
 		if (quizId) {
 			fetchQuiz();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [quizId]);
+
 	const hasError = useMemo(() => {
 		return (
 			(!!errors.title ||
@@ -172,28 +180,26 @@ const QuizForm = () => {
 	}, [errors, touched]);
 
 	return (
-		<Box onSubmit={submitForm} className={styles.quizForm}>
+		<div className={styles.quizForm}>
 			<UploadMedia
 				isOpen={uploadModal}
 				onClose={() => setUploadModal(false)}
 				handleSave={handleUploadMedia}
 			/>
-			<Stack direction="column" spacing={2} sx={{ pb: 2 }}>
-				<Stack direction="row" alignItems={'center'}>
-					<TextField
-						className={styles.field}
+			<div className="flex flex-col gap-2 pb-2">
+				<div className="flex items-center">
+					<Input
+						className={cn('w-full', styles.field)}
 						name="title"
-						label="Назва"
+						placeholder="Назва"
 						onChange={handleChange}
 						onBlur={handleBlur('title')}
-						sx={{ width: '100%' }}
 						value={values.title}
-						error={touched.title && Boolean(errors.title)}
-						helperText={touched.title && errors.title}
+						error={touched.title && errors.title}
 						required
 					/>
 					{mediaUrl ? (
-						<Box height={100}>
+						<div className="h-24">
 							<Image
 								src={mediaUrl}
 								alt="Quiz Image"
@@ -201,39 +207,35 @@ const QuizForm = () => {
 								height={100}
 								style={{ marginLeft: '1rem' }}
 							/>
-							<IconButton
-								sx={{
-									position: 'relative',
-									top: '-100px',
-									left: '80px',
-									height: '35px',
-									width: '35px'
-								}}
+							<Button
+								className="relative top-[-100px] left-[80px] h-10 w-10"
 								onClick={() => {
 									handleRemoveImage();
 								}}
+								size="icon"
+								variant="ghost"
 							>
-								<DeleteOutlineIcon sx={{ color: 'var(--red)' }} />
-							</IconButton>
-						</Box>
+								<Trash2Icon className="stroke-red-500" />
+							</Button>
+						</div>
 					) : (
-						<IconButton
-							sx={{ width: '56px', height: '56px' }}
+						<Button
+							variant="ghost"
+							size="icon"
 							onClick={() => setUploadModal(true)}
 						>
 							<CloudUploadIcon />
-						</IconButton>
+						</Button>
 					)}
-				</Stack>
-				<TextField
+				</div>
+				<Input
 					className={styles.field}
 					name="subtitle"
-					label="Опис"
+					placeholder="Опис"
 					onBlur={handleBlur('subtitle')}
 					onChange={handleChange}
 					value={values.subtitle}
-					error={touched.subtitle && Boolean(errors.subtitle)}
-					helperText={touched.subtitle && errors.subtitle}
+					error={touched.subtitle && errors.subtitle}
 				/>
 
 				<QuestionForm
@@ -244,25 +246,21 @@ const QuizForm = () => {
 					values={values}
 					errors={errors}
 				/>
-				<Typography>Максимум балів: {totalScore}</Typography>
-				<TextField
-					className={styles.field}
+				<p>Максимум балів: {totalScore}</p>
+				<Textarea
+					className="resize-none"
 					name="summary"
-					label="Опис результатів"
+					placeholder="Опис результатів"
 					required
-					multiline
 					onChange={handleChange}
 					onBlur={handleBlur('summary')}
 					value={values.summary}
-					error={touched.summary && Boolean(errors.summary)}
-					helperText={touched.summary ? errors.summary : ''}
+					error={touched.summary ? errors.summary : ''}
 				/>
-			</Stack>
+			</div>
 
 			{!!hasError && (
-				<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14 }}>
-					{'Зaповність всі необхідні поля'}
-				</Typography>
+				<p className="text-red-500 text-sm">Зaповність всі необхідні поля</p>
 			)}
 			{!values.questions.length ? (
 				<Button
@@ -270,21 +268,18 @@ const QuizForm = () => {
 						setValues(quizInitial);
 					}}
 					disabled={!!quizId}
-					sx={{ m: 2, ml: 3 }}
+					className="m-2 ml-3"
 				>
 					Додати питання
 				</Button>
 			) : values.questions.length === 1 ? (
-				<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14 }}>
-					{'Необхідно додати ще питання'}
-				</Typography>
+				<p className="text-red-500 text-sm">Необхідно додати ще питання</p>
 			) : (
-				<Button variant="contained" onClick={() => submitForm()}>
+				<Button onClick={() => submitForm()}>
 					{quizId ? 'Оновити' : 'Створити'}
 				</Button>
 			)}
-			{}
-		</Box>
+		</div>
 	);
 };
 

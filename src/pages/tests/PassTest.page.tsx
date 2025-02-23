@@ -1,12 +1,3 @@
-import {
-	Box,
-	FormControlLabel,
-	FormHelperText,
-	Radio,
-	RadioGroup,
-	Stack,
-	Typography
-} from '@mui/material';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -14,8 +5,10 @@ import { useEffect, useState } from 'react';
 
 import { getQuizById } from '@/api/quiz.api';
 import { createTake } from '@/api/take.api';
-import Button from '@/components/custom/Button';
 import CenteredLoader from '@/components/custom/CenteredLoader';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { takeInitial } from '@/data/initialValues/quizInitial';
 import { MESSAGE_TYPE, SOMETHING_WENT_WRONG } from '@/data/messageData';
@@ -74,6 +67,7 @@ const PassTestForm = () => {
 		if (quizId) {
 			fetchQuiz();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [quizId]);
 
 	useEffect(() => {
@@ -96,66 +90,54 @@ const PassTestForm = () => {
 	}
 
 	return (
-		<Box className={styles.quizForm}>
-			<Stack direction="column" spacing={2} sx={{ pb: 2 }}>
-				<Typography variant="h1">{quiz.title}</Typography>
-				<Typography variant="h3">{quiz?.subtitle}</Typography>
+		<div className={styles.quizForm}>
+			<div className="flex flex-col gap-2 pb-2">
+				<h1 className="text-2xl font-bold">{quiz.title}</h1>
+				<h3 className="text-lg">{quiz?.subtitle}</h3>
 				{quiz.questions.map((question, questionIndex) => (
-					<Stack
+					<div
 						key={questionIndex}
-						direction="column"
-						spacing={2}
-						sx={{
-							p: 2,
-							mt: 1,
-							backgroundColor: '#f5f5f5',
-							borderRadius: '5px'
-						}}
+						className="flex flex-col gap-2 p-2 mt-1 bg-gray-100 rounded-md"
 					>
-						<Typography variant="h2">{question.title}</Typography>
-						<Typography>{question.subtitle}</Typography>
-						<Stack direction="column" spacing={1}>
-							{errors.answers?.[questionIndex] && (
-								<FormHelperText error>
-									Дайте відповідь на це запитання.
-								</FormHelperText>
-							)}
+						<h2 className="text-xl font-bold">{question.title}</h2>
+						<p className="text-sm">{question.subtitle}</p>
+						{errors.answers?.[questionIndex] && (
+							<p className="text-red-500 text-sm">
+								Дайте відповідь на це запитання.
+							</p>
+						)}
+						<div className="flex flex-col gap-1">
 							<RadioGroup
 								name={`answers[${questionIndex}].answerId`}
-								value={values.answers[questionIndex]?.answerId}
-								onChange={event => {
+								value={values.answers[questionIndex]?.answerId?.toString()}
+								onValueChange={value => {
 									setFieldValue(
 										`answers[${questionIndex}].answerId`,
-										Number(event.target.value)
-									);
-									setFieldValue(
-										`answers[${questionIndex}].questionId`,
-										question.id
+										Number(value)
 									);
 								}}
 							>
 								{question.answers.map((answer, answerIndex) => (
-									<FormControlLabel
-										key={answerIndex}
-										value={answer.id}
-										control={<Radio />}
-										label={answer.title}
-									/>
+									<div key={answerIndex} className="flex items-center gap-2">
+										<RadioGroupItem
+											value={answer.id.toString()}
+											id={answer.id.toString()}
+										/>
+										<Label htmlFor={answer.id.toString()}>{answer.title}</Label>
+									</div>
 								))}
 							</RadioGroup>
-						</Stack>
-					</Stack>
+						</div>
+					</div>
 				))}
-			</Stack>
+			</div>
 			{!!errors?.answers && (
-				<Typography sx={{ color: 'rgb(253, 54, 54)', fontSize: 14 }}>
-					{'Заповність усі необхідні поля'}
-				</Typography>
+				<p className="text-red-500 text-sm mb-2">
+					Заповність усі необхідні поля
+				</p>
 			)}
-			<Button variant="contained" onClick={() => submitForm()}>
-				Завершити
-			</Button>
-		</Box>
+			<Button onClick={() => submitForm()}>Завершити</Button>
+		</div>
 	);
 };
 

@@ -1,12 +1,14 @@
-import { CircularProgress } from '@mui/material';
-import Dialog, { DialogProps } from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import * as React from 'react';
+import { DialogProps } from '@radix-ui/react-dialog';
 
-import Button from '../custom/Button';
+import { Button } from '@/components/ui/button';
+
+import CenteredLoader from '../custom/CenteredLoader';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle
+} from '../ui/dialog';
 
 type Props = DialogProps & {
 	open: boolean;
@@ -40,52 +42,27 @@ export default function AlertDialog({
 	...props
 }: Props) {
 	return (
-		<Dialog
-			open={open}
-			onClose={onCancel}
-			aria-labelledby="alert-dialog-title"
-			aria-describedby="alert-dialog-description"
-			{...props}
-		>
-			<DialogTitle
-				sx={{ textAlign: 'center' }}
-				id="alert-dialog-title"
-				variant="h1"
-			>
-				{title || 'Are you sure you want to commit this action?'}
-			</DialogTitle>
-			{text && (
-				<DialogContent>
-					<DialogContentText
-						id="alert-dialog-description"
-						variant="body1"
-						color="var(--gray-1)"
+		<Dialog open={open} onOpenChange={open => !open && onCancel()} {...props}>
+			<DialogContent>
+				<DialogTitle className="text-center">
+					{title || 'Are you sure you want to commit this action?'}
+				</DialogTitle>
+				{text && (
+					<DialogDescription color="var(--gray-1)">{text}</DialogDescription>
+				)}
+				<div className="flex flex-row gap-2">
+					<Button
+						color={buttonColor ? buttonColor : 'error'}
+						onClick={onCancel}
+						className="mr-auto"
 					>
-						{text}
-					</DialogContentText>
-				</DialogContent>
-			)}
-			<DialogActions>
-				<Button
-					color={buttonColor ? buttonColor : 'error'}
-					onClick={onCancel}
-					sx={{ mr: 'auto' }}
-				>
-					Відмінити
-				</Button>
-				<Button
-					onClick={onAccept}
-					autoFocus
-					variant="contained"
-					sx={{ ml: 'auto' }}
-				>
-					{isWaiting ? (
-						<CircularProgress size={24} />
-					) : (
-						agreeButtonText || 'Так'
-					)}
-				</Button>
-			</DialogActions>
+						Відмінити
+					</Button>
+					<Button onClick={onAccept} autoFocus className="ml-auto">
+						{isWaiting ? <CenteredLoader /> : agreeButtonText || 'Так'}
+					</Button>
+				</div>
+			</DialogContent>
 		</Dialog>
 	);
 }

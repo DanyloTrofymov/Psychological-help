@@ -1,48 +1,43 @@
-import {
-	Dialog,
-	DialogContent,
-	DialogTitle,
-	Stack,
-	Typography
-} from '@mui/material';
+import { Button } from '@/components/ui/button';
 
-import Button from '../custom/Button';
 import CenteredLoader from '../custom/CenteredLoader';
+import { Dialog, DialogContent, DialogHeader } from '../ui/dialog';
 
 const SendToChatModal = ({
 	open,
 	isLoading,
-	onClose,
+	onOpenChange,
 	onAiSubmit,
 	onTherapistSubmit
 }: {
 	open: boolean;
 	isLoading: boolean;
-	onClose: () => void;
+	onOpenChange: (open: boolean) => void;
 	onAiSubmit: () => void;
 	onTherapistSubmit: () => void;
 }) => (
 	<>
-		<Dialog open={open} onClose={onClose}>
-			<DialogTitle>
-				<Typography variant="h1">
-					В який чат ви хочете відправити повідомлення?
-				</Typography>
-			</DialogTitle>
-			<DialogContent sx={{ display: 'flex', justifyContent: 'space-between' }}>
-				<Button variant="contained" onClick={onAiSubmit}>
-					Чат з ШІ
-				</Button>
-				<Button variant="contained" onClick={onTherapistSubmit}>
-					Чат з терапевтом
-				</Button>
-			</DialogContent>
-		</Dialog>
-		<Dialog open={isLoading}>
-			<Stack sx={{ height: '100px', width: '100px' }}>
-				<CenteredLoader />
-			</Stack>
-		</Dialog>
+		{isLoading ? (
+			<Dialog open={isLoading}>
+				<DialogContent>
+					<div className="h-24 w-24">
+						<CenteredLoader />
+					</div>
+				</DialogContent>
+			</Dialog>
+		) : (
+			<Dialog open={open} onOpenChange={onOpenChange}>
+				<DialogContent>
+					<DialogHeader>
+						В який чат ви хочете відправити повідомлення?
+					</DialogHeader>
+					<div className="flex justify-between w-full">
+						<Button onClick={onAiSubmit}>Чат з ШІ</Button>
+						<Button onClick={onTherapistSubmit}>Чат з терапевтом</Button>
+					</div>
+				</DialogContent>
+			</Dialog>
+		)}
 	</>
 );
 
