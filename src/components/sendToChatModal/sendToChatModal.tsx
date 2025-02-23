@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 
 import CenteredLoader from '../custom/CenteredLoader';
+import { AlertDialog, AlertDialogContent } from '../ui/alert-dialog';
 import { Dialog, DialogContent, DialogHeader } from '../ui/dialog';
 
 const SendToChatModal = ({
@@ -18,13 +19,13 @@ const SendToChatModal = ({
 }) => (
 	<>
 		{isLoading ? (
-			<Dialog open={isLoading}>
-				<DialogContent>
+			<AlertDialog open={isLoading}>
+				<AlertDialogContent className="max-w-36">
 					<div className="h-24 w-24">
 						<CenteredLoader />
 					</div>
-				</DialogContent>
-			</Dialog>
+				</AlertDialogContent>
+			</AlertDialog>
 		) : (
 			<Dialog open={open} onOpenChange={onOpenChange}>
 				<DialogContent>

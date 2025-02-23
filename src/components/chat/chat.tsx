@@ -1,5 +1,5 @@
 // components/Chat.tsx
-import { InfoIcon } from 'lucide-react';
+import { InfoIcon, SendIcon } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -243,7 +243,7 @@ const Chat = ({
 							<TooltipProvider>
 								<Tooltip>
 									<TooltipTrigger>
-										<InfoIcon className="mr-1" />
+										<InfoIcon className="mr-2" />
 									</TooltipTrigger>
 									<TooltipContent className="max-w-[500px]">
 										<p className="text-sm">
@@ -272,12 +272,14 @@ const Chat = ({
 							className="w-full mb-1 resize-none"
 						/>
 						<Button
-							className="ml-3"
+							className="ml-2 p-2"
 							ref={buttonRef}
 							onClick={handleSend}
 							disabled={!!aiMessage}
+							size="icon"
+							variant="default"
 						>
-							Надіслати
+							<SendIcon />
 						</Button>
 					</>
 				)}
