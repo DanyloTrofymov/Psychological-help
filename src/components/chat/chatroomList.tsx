@@ -110,14 +110,14 @@ const ChatRoomList = ({
 
 	const renderSidebarContent = () => {
 		return (
-			<div className="flex flex-col h-full">
+			<div className="flex flex-col h-full md:h-[calc(100vh-170px)] ">
 				{[0, 1].includes(tab) && (
 					<Button
 						variant="ghost"
 						size="icon"
 						onClick={handleCreateChatroom}
 						color="primary"
-						className={cn('!justify-start rounded-md', styles.listItem)}
+						className={cn('!justify-start rounded-md bg-primary/10 w-full p-5')}
 					>
 						<CirclePlusIcon />
 						{tab === 0
@@ -219,7 +219,7 @@ const ChatRoomList = ({
 				{isSidebarOpen ? <XIcon /> : <MenuIcon />}
 			</Button>
 			{/* DESKTOP SIDEBAR: Always visible on md+ */}
-			<div className="hidden md:block w-64 border-r bg-white h-screen">
+			<div className="hidden md:block w-64 border-r bg-white h-full md:h-[calc(100vh-120px)]">
 				{renderSidebarContent()}
 			</div>
 
@@ -239,7 +239,7 @@ const ChatRoomList = ({
 				<div
 					className={cn(
 						'bg-white h-full overflow-y-auto transition-[width] duration-300',
-						isSidebarOpen ? 'w-[90%]' : 'w-0'
+						isSidebarOpen ? 'w-[80%]' : 'w-0'
 					)}
 					onClick={e => {
 						// Prevent closing when clicking inside
@@ -252,9 +252,9 @@ const ChatRoomList = ({
 				{/* OVERLAY (10% dark area) */}
 				<div
 					className={cn(
-						'w-full h-full bg-black/50 transition-all duration-300',
+						'w-[100%] h-full bg-black/50 transition-all duration-300',
 						{
-							'w-[10%]': isSidebarOpen
+							'!w-[20%]': isSidebarOpen
 						}
 					)}
 				/>
