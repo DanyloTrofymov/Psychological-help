@@ -47,7 +47,7 @@ const TakeCard: React.FC<TakeCardProps> = ({ take }) => {
 	return (
 		<>
 			<Card
-				className="flex-grow cursor-pointer min-w-[300px]"
+				className="flex-grow cursor-pointer min-w-[250px] sm:min-w-[350px]"
 				onClick={() => router.push(`/tests/overview/${take.id}`)}
 			>
 				<div className="relative h-40 w-full mb-2">

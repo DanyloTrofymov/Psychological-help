@@ -57,7 +57,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 		<>
 			<LoginModal open={showModal} onOpenChange={setShowModal} />
 			<Card
-				className="flex-grow cursor-pointer min-w-[300px]"
+				className="flex-grow cursor-pointer min-w-[250px] sm:min-w-[350px]"
 				onMouseEnter={() => setVisible(true)}
 				onMouseLeave={() => setVisible(false)}
 				onClick={handleQuizClick}
