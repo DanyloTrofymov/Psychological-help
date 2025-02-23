@@ -25,7 +25,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from '../ui/tooltip';
-import styles from './quizCard.module.scss';
 
 interface QuizCardProps {
 	quiz: QuizResponse;
@@ -58,7 +57,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 		<>
 			<LoginModal open={showModal} onOpenChange={setShowModal} />
 			<Card
-				className={styles.quizCard}
+				className="flex-grow cursor-pointer"
 				onMouseEnter={() => setVisible(true)}
 				onMouseLeave={() => setVisible(false)}
 				onClick={handleQuizClick}
@@ -74,7 +73,9 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 					<div className="flex items-center justify-between">
 						<div className="flex flex-col w-full">
 							<div className="flex items-center justify-between">
-								<p className="text-2xl font-semibold h-12">{quiz.title}</p>
+								<p className="text-2xl text-wrap break-all">
+									{quiz.title + '123123123123123123123123123123123123123123123'}
+								</p>
 								{visible && user?.role.key === ROLE.ADMIN && (
 									<div className="flex items-center gap-2">
 										<Button
