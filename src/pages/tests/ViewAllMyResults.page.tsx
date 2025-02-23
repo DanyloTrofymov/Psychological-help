@@ -26,7 +26,7 @@ const QuizLayout = () => {
 
 	return (
 		<div>
-			<p className="text-2xl text-center text-gray-800 pb-2 font-semibold">
+			<p className="text-2xl text-center text-gray-800 pb-2 font-semibold w-full">
 				Мої результати
 			</p>
 			<InfiniteScroll

@@ -8,8 +8,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { QuizResponse } from '@/data/dto/quiz/quiz.response';
 import { TakeResponse } from '@/data/dto/take/take.response';
 
-import styles from '../quizCard/quizCard.module.scss';
-
 interface TakeCardProps {
 	take: TakeResponse;
 }
@@ -49,7 +47,7 @@ const TakeCard: React.FC<TakeCardProps> = ({ take }) => {
 	return (
 		<>
 			<Card
-				className={styles.quizCard}
+				className="flex-grow cursor-pointer"
 				onClick={() => router.push(`/tests/overview/${take.id}`)}
 			>
 				<div className="relative h-40 w-full mb-2">
@@ -60,7 +58,7 @@ const TakeCard: React.FC<TakeCardProps> = ({ take }) => {
 					/>
 				</div>
 				<CardContent>
-					<p className="text-2xl">{quiz.title}</p>
+					<p className="text-2xl text-wrap break-all">{quiz.title}</p>
 					{quiz.subtitle && (
 						<p className="overflow-hidden text-ellipsis whitespace-pre-wrap">
 							{quiz.subtitle}

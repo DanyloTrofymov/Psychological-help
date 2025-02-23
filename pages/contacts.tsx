@@ -16,7 +16,7 @@ export default function Contacts() {
 
 	return (
 		<div className="flex flex-col p-6">
-			<p className="text-2xl font-bold mb-2">
+			<p className="text-2xl text-center text-gray-800 pb-2 font-semibold w-full">
 				Контакти безкоштовної психологічної допомоги
 			</p>
 			<div className="flex flex-col gap-4">
