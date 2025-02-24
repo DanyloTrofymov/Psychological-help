@@ -32,7 +32,6 @@ interface QuizCardProps {
 
 const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 	const defaultImage = '/images/quiz.jpg';
-	const [visible, setVisible] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const { user } = useUser();
@@ -57,9 +56,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 		<>
 			<LoginModal open={showModal} onOpenChange={setShowModal} />
 			<Card
-				className="flex-grow cursor-pointer min-w-[250px] sm:min-w-[350px]"
-				onMouseEnter={() => setVisible(true)}
-				onMouseLeave={() => setVisible(false)}
+				className="flex-grow cursor-pointer min-w-[250px] sm:min-w-[350px] group"
 				onClick={handleQuizClick}
 			>
 				<div className="relative h-40 w-full mb-2">
@@ -68,47 +65,47 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 						alt="Media"
 						layout="fill"
 					/>
+					{user?.role.key === ROLE.ADMIN && (
+						<div className="absolute top-0 right-0 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+							<div className="flex items-center gap-2">
+								<Button
+									variant="outline"
+									size="icon"
+									onClick={e => {
+										e.stopPropagation();
+										router.push(`/tests/statistic/${quiz.id}`);
+									}}
+								>
+									<ChartAreaIcon />
+								</Button>
+								<Button
+									variant="outline"
+									size="icon"
+									onClick={e => {
+										e.stopPropagation();
+										router.push(`/tests/manage/${quiz.id}`);
+									}}
+								>
+									<PencilIcon />
+								</Button>
+								<Button
+									variant="outline"
+									size="icon"
+									onClick={e => {
+										e.stopPropagation();
+										setIsDeleting(true);
+									}}
+								>
+									<Trash2Icon />
+								</Button>
+							</div>
+						</div>
+					)}
 				</div>
 				<CardContent>
 					<div className="flex items-center justify-between">
 						<div className="flex flex-col w-full">
-							<div className="flex items-center justify-between">
-								<p className="text-2xl text-wrap break-all">{quiz.title}</p>
-								{visible && user?.role.key === ROLE.ADMIN && (
-									<div className="flex items-center gap-2">
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={e => {
-												e.stopPropagation();
-												router.push(`/tests/statistic/${quiz.id}`);
-											}}
-										>
-											<ChartAreaIcon />
-										</Button>
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={e => {
-												e.stopPropagation();
-												router.push(`/tests/manage/${quiz.id}`);
-											}}
-										>
-											<PencilIcon />
-										</Button>
-										<Button
-											variant="ghost"
-											size="icon"
-											onClick={e => {
-												e.stopPropagation();
-												setIsDeleting(true);
-											}}
-										>
-											<Trash2Icon />
-										</Button>
-									</div>
-								)}
-							</div>
+							<p className="text-2xl text-wrap break-all">{quiz.title}</p>
 							{quiz.subtitle && (
 								<p className="overflow-hidden text-ellipsis whitespace-pre-wrap">
 									{quiz.subtitle}
